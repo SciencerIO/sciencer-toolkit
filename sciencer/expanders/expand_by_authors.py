@@ -1,6 +1,5 @@
 """Expands papers by their authors
 """
-from turtle import update
 from typing import List
 from sciencer.policies import Policy
 from .expander import Expander
