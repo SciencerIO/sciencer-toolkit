@@ -4,11 +4,11 @@ from setuptools import setup
 
 curr_dir_path = pathlib.Path(__file__).parent
 
-readme_content = (curr_dir_path/".github/README.md").read_text()
+readme_content = (curr_dir_path/"README.md").read_text()
 
 setup(
     name="sciencer",
-    version="0.0.3",
+    version="0.0.4",
     description="A smarter way to find new articles",
     long_description=readme_content,
     long_description_content_type="text/markdown",
