@@ -18,7 +18,7 @@
          alt="GitHub pull requests"></a>
     <a href="https://github.com/SciencerIO/sciencer-toolkit/LICENSE">
     <img src="https://img.shields.io/github/license/SciencerIO/sciencer-toolkit.svg?style=flat-square&logo=github&logoColor=white"
-         alt="License: GPL-3.0"></a>
+         alt="License: MIT License"></a>
 
 </p>
             
