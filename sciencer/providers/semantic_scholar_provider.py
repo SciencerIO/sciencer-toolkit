@@ -9,11 +9,7 @@ from ..models import Paper
 
 
 s2_fields = ["title", "externalIds", "authors", "abstract", "year"]
-s2_url_single_fields = "".join([f"{field}," for field in s2_fields]).removesuffix(",")
-s2_url_multiple_fields = "".join(
-    [f"papers.{field}," for field in s2_fields]
-).removesuffix(",")
-
+s2_url_single_fields = "".join([f"{field}," for field in s2_fields])[:-1]
 
 def create_paper_from_json(paper_json) -> Paper:
     """Create a Paper Object based on available json dictionary
