@@ -25,7 +25,6 @@
 <p align="center">
   <a href="#about">About</a> •
   <a href="#usage">Usage</a> •
-  <a href="#features">Features</a> •
   <a href="#roadmap">Roadmap</a> •
   <a href="#contributing">Contributing</a> •
   <a href="#license">License</a>
@@ -40,42 +39,55 @@
 ---
 
 ## About
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin libero justo, varius ac nulla non, lacinia bibendum arcu. Sed quis tempus ligula. Morbi convallis neque et dui imperdiet, sit amet venenatis lacus congue. 
+Sciencer Toolkit enables researchers with the tools to **programmatically conduct a literature review** using an intuitive yet flexible interface.
 
-Quisque quis nunc mauris. Sed id justo risus. Mauris egestas gravida convallis. Vivamus tempor, arcu id maximus venenatis, ligula felis convallis ligula, quis sollicitudin libero tortor in magna. Donec semper nec odio et porta. 
+Sciencer iteratively identifies a set of papers using **Expanders**. Each expander enlarges a set of papers to a larger set (e.g. using authors, citations, references, etc...). At the end of each iteration, each new paper needs to satisfy a series of **Filters** to be accepted. The initial set of papers is created using **Collectors** (e.g. by paper doi, author name).
 
-Etiam fringilla placerat congue. Nullam rutrum purus eu augue finibus, non ullamcorper risus convallis. Praesent accumsan sed eros vitae efficitur. Sed non odio a nisl blandit consectetur sed nec velit. Integer gravida lorem nisl, eget luctus libero sit. 
+This project was motivated by the absence of tools to automate systematic reviews using clear and well-defined criteria. Still, for literature reviews that do not need to follow specific criteria, there are a several tools that can help to discover new papers.
 
 ## Usage
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+```python
+# Create the Sciencer Core Component
+sciencer = Sciencer()
 
-## Features
+# Define provider
+sciencer.add_provider(SemanticScholarProvider())
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin libero justo, varius ac nulla non, lacinia bibendum arcu. Sed quis tempus ligula. 
+# Define collectors
+sciencer.add_collector(sciencer.collectors.CollectByAuthorID(...))
+sciencer.add_collector(sciencer.collectors.CollectByDOI(...))
 
-- Main feature One
-- Main feature Two
-  - Sub feature TwoOne
-  - Sub feature TwoTwo
-- Main feature Three
+# Define expanders
+sciencer.add_expander(sciencer.expanders.ExpandByAuthors())
+
+# Define filters
+sciencer.add_filter(sciencer.filters.FilterByYear(min_year=2010, max_year=2030))
+sciencer.add_filter(sciencer.filters.FilterByAbstract("social"))
+
+# Run one iterations
+results = sciencer.iterate()
+
+```
+
+For more examples on how to use the Sciencer toolkit, please check the directory `examples/`.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Collectors
 
-| Name         | Description |  Parameters  |
-| -----------  | :---------: | ------------ |
-| Author ID |             |              |
-| Paper ID  |             |              |     
+| Name         | Description | Parameters |
+| -----------  | :---------- | :--------- |           
+| Author ID    | Collects all the papers written by an author | Authors's SemanticScholar ID |
+| Paper DOI    | Collects a paper by its DOI | Paper's DOI |    
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Expanders
 
-| Name         | Description |  Parameters  |
-| -----------  | :---------: | ------------ |
-| Authors      |             |              |
+| Name         | Description | 
+| -----------  | :---------- | 
+| Authors      | Expands a paper by its authors |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -83,8 +95,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin libero justo, var
 
 | Name                | Description |  Parameters  |
 | -----------         | :---------: | ------------ |
-| By Year             |             |              |
-| By Abstract Words   |             |              |     
+| By Year             | Filters a paper by its year  | The lowest acceptable year (inclusive) <br> The highest acceptable year (inclusive) |
+| By Abstract Words   | Filters a paper by its abstract | The collection of words the abstract should include (at least one)  |     
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -92,7 +104,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin libero justo, var
 
 
 | Name        | Provider    | Features    |
-| ----------- | ----------- | ----------- |
+| :----------: | :----------: | :----------- |
 | Semantic Scholar      | [Semantic Scholar Academic Graph API](https://www.semanticscholar.org/product/api)       | **Search by Author** (Name, S2ID) <br> **Search By Paper ID** (S2ID, DOI, ArXiv, MAG, ACL, PubMed, Corpus)
 | DBLP   |   [DBLP Search API](https://dblp.org/faq/How+to+use+the+dblp+search+API.html) | *Work in Progress*
 
