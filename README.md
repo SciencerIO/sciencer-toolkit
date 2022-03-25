@@ -16,6 +16,10 @@
     <a href="https://github.com/SciencerIO/sciencer-toolkit/pulls">
     <img src="https://img.shields.io/github/issues-pr-raw/SciencerIO/sciencer-toolkit.svg?style=flat-square&logo=github&logoColor=white"
          alt="GitHub pull requests"></a>
+    <a href="https://github.com/SciencerIO/sciencer-toolkit/LICENSE">
+    <img src="https://img.shields.io/github/license/SciencerIO/sciencer-toolkit.svg?style=flat-square&logo=github&logoColor=white"
+         alt="License: GPL-3.0"></a>
+
 </p>
             
 <p align="center">
@@ -126,11 +130,5 @@ Want to **add a new provider, filter or expander**? Looking to improve **the cor
 5. Open a Pull Request
 
 If you are looking for an additional collector/filter/expander/provider or just want to report a bug, you can also simply open an issue with the tag "enchament" or "bug", respectively.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-## License
-
-[![License: CC0-1.0](https://img.shields.io/badge/License-CC0%201.0-lightgrey.svg)](https://tldrlegal.com/license/creative-commons-cc0-1.0-universal)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
