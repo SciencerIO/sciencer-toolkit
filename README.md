@@ -4,7 +4,7 @@
   Sciencer Toolkit
 </h1>
 
-<h4 align="center">A smarter way to find new articles.</h4>
+<h4 align="center">A smarter way to find articles.</h4>
 
 <p align="center">
     <a href="https://pypi.org/project/sciencer-toolkit/">
@@ -21,7 +21,7 @@
          alt="License: MIT License"></a>
 
 </p>
-            
+
 <p align="center">
   <a href="#about">About</a> •
   <a href="#usage">Usage</a> •
@@ -39,11 +39,16 @@
 ---
 
 ## About
-Sciencer Toolkit enables researchers with the tools to **programmatically conduct a literature review** using an intuitive yet flexible interface.
+Sciencer Toolkit enables researchers to **programmatically conduct a literature review** using an intuitive yet flexible interface.
 
-Sciencer iteratively identifies a set of papers using **Expanders**. Each expander enlarges a set of papers to a larger set (e.g. using authors, citations, references, etc...). At the end of each iteration, each new paper needs to satisfy a series of **Filters** to be accepted. The initial set of papers is created using **Collectors** (e.g. by paper doi, author name).
+At its core, Sciencer collects sets of papers.
+The initial set of papers is created through the use of **Collectors** (e.g. paper doi, author name).
+Then, Sciencer iteratively finds new papers using **Expanders** (e.g. authors, citations, references).
+Finally, new found papers need to satisfy a series of **Filters** in order to be accepted into the current set.
+Being iterative in nature, Sciencer allows you to repeat the above steps has many times as you'd like.
 
-This project was motivated by the absence of tools to automate systematic reviews using clear and well-defined criteria. Still, for literature reviews that do not need to follow specific criteria, there are a several tools that can help to discover new papers.
+This project was motivated by the absence of tools to automate systematic reviews using clear and well-defined criteria.
+Still, for literature reviews that do not need to follow specific criteria, there are a several tools that can help to discover new papers.
 
 ## Usage
 
@@ -55,10 +60,13 @@ sciencer = Sciencer()
 sciencer.add_provider(SemanticScholarProvider())
 
 # Define collectors
-sciencer.add_collector(sciencer.collectors.CollectByAuthorID(...))
-sciencer.add_collector(sciencer.collectors.CollectByDOI(...))
+## this collector will gather all known papers authored by "John Doe" into de set
+sciencer.add_collector(sciencer.collectors.CollectByAuthorID("John Doe"))
+## this collector will collect the paper with DOI "1234567890" into the set
+sciencer.add_collector(sciencer.collectors.CollectByDOI("1234567890"))
 
 # Define expanders
+## this expander will gather all known papers written by authors in the current set.
 sciencer.add_expander(sciencer.expanders.ExpandByAuthors())
 
 # Define filters
@@ -77,16 +85,16 @@ For more examples on how to use the Sciencer toolkit, please check the directory
 ## Collectors
 
 | Name         | Description | Parameters |
-| -----------  | :---------- | :--------- |           
+| -----------  | :---------- | :--------- |
 | Author ID    | Collects all the papers written by an author | Authors's SemanticScholar ID |
-| Paper DOI    | Collects a paper by its DOI | Paper's DOI |    
+| Paper DOI    | Collects a paper by its DOI | Paper's DOI |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Expanders
 
-| Name         | Description | 
-| -----------  | :---------- | 
+| Name         | Description |
+| -----------  | :---------- |
 | Authors      | Expands a paper by its authors |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -96,7 +104,7 @@ For more examples on how to use the Sciencer toolkit, please check the directory
 | Name                | Description |  Parameters  |
 | -----------         | :---------: | ------------ |
 | By Year             | Filters a paper by its year  | The lowest acceptable year (inclusive) <br> The highest acceptable year (inclusive) |
-| By Abstract Words   | Filters a paper by its abstract | The collection of words the abstract should include (at least one)  |     
+| By Abstract Words   | Filters a paper by its abstract | The collection of words the abstract should include (at least one)  |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -114,7 +122,7 @@ For more examples on how to use the Sciencer toolkit, please check the directory
 
 - [ ] Create Paper's and Author's Cache
 - [x] Add Bulk Expanders (to avoid redundancy)
-- [ ] Add support for multithreading 
+- [ ] Add support for multithreading
 - [ ] Add Collectors
   - [ ] Add Collect by Venue/Proceedings
 - [ ] Add Expanders
@@ -134,12 +142,10 @@ See the [open issues](https://github.com/SciencerIO/sciencer-toolkit/issues) for
 
 ## Contributing
 
-Want to **add a new provider, filter or expander**? Looking to improve **the core functionality of sciencer toolkit**. We would look forward to include your contributions in the toolkit! If you have a suggestion that would improve the toolkit, please fork the repo and create a new pull request:
-1. Fork the Project
-2. Create your Feature Branch 
-3. Commit your Changes 
-4. Push to the Branch
-5. Open a Pull Request
+Want to **add a new provider, filter or expander**?
+Looking to improve **the core functionality of sciencer toolkit**.
+We look forward to include your contributions in the toolkit!
+If you have a suggestion that would improve the toolkit just send us a Pull Request!
 
 If you are looking for an additional collector/filter/expander/provider or just want to report a bug, you can also simply open an issue with the tag "enchament" or "bug", respectively.
 
