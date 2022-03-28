@@ -70,10 +70,12 @@ sciencer.add_collector(sciencer.collectors.CollectByDOI("1234567890"))
 sciencer.add_expander(sciencer.expanders.ExpandByAuthors())
 
 # Define filters
+## this filter will reject papers that were published before 2010 and after 2030
 sciencer.add_filter(sciencer.filters.FilterByYear(min_year=2010, max_year=2030))
+## this filter will reject all the appers that do not have the word social on the abstract
 sciencer.add_filter(sciencer.filters.FilterByAbstract("social"))
 
-# Run one iterations
+# Run one iteration
 results = sciencer.iterate()
 
 ```
@@ -84,37 +86,37 @@ For more examples on how to use the Sciencer toolkit, please check the directory
 
 ## Collectors
 
-| Name         | Description | Parameters |
-| -----------  | :---------- | :--------- |
-| Author ID    | Collects all the papers written by an author | Authors's SemanticScholar ID |
-| Paper DOI    | Collects a paper by its DOI | Paper's DOI |
+| Name      | Description                                  | Parameters                   |
+| --------- | :------------------------------------------- | :--------------------------- |
+| Author ID | Collects all the papers written by an author | Authors's SemanticScholar ID |
+| Paper DOI | Collects a paper by its DOI                  | Paper's DOI                  |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Expanders
 
-| Name         | Description |
-| -----------  | :---------- |
-| Authors      | Expands a paper by its authors |
+| Name    | Description                    |
+| ------- | :----------------------------- |
+| Authors | Expands a paper by its authors |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Filters
 
-| Name                | Description |  Parameters  |
-| -----------         | :---------: | ------------ |
-| By Year             | Filters a paper by its year  | The lowest acceptable year (inclusive) <br> The highest acceptable year (inclusive) |
-| By Abstract Words   | Filters a paper by its abstract | The collection of words the abstract should include (at least one)  |
+| Name              | Description                     | Parameters                                                                          |
+| ----------------- | :------------------------------ | ----------------------------------------------------------------------------------- |
+| By Year           | Filters a paper by its year     | The lowest acceptable year (inclusive) <br> The highest acceptable year (inclusive) |
+| By Abstract Words | Filters a paper by its abstract | The collection of words the abstract should include (at least one)                  |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Providers
 
 
-| Name        | Provider    | Features    |
-| :----------: | :----------: | :----------- |
-| Semantic Scholar      | [Semantic Scholar Academic Graph API](https://www.semanticscholar.org/product/api)       | **Search by Author** (Name, S2ID) <br> **Search By Paper ID** (S2ID, DOI, ArXiv, MAG, ACL, PubMed, Corpus)
-| DBLP   |   [DBLP Search API](https://dblp.org/faq/How+to+use+the+dblp+search+API.html) | *Work in Progress*
+|       Name       |                                      Provider                                      | Features                                                                                                   |
+| :--------------: | :--------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------- |
+| Semantic Scholar | [Semantic Scholar Academic Graph API](https://www.semanticscholar.org/product/api) | **Search by Author** (Name, S2ID) <br> **Search By Paper ID** (S2ID, DOI, ArXiv, MAG, ACL, PubMed, Corpus) |
+|       DBLP       |    [DBLP Search API](https://dblp.org/faq/How+to+use+the+dblp+search+API.html)     | *Work in Progress*                                                                                         |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
