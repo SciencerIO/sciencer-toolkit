@@ -20,3 +20,6 @@ class FakeProvider(Provider):
             return None
 
         return resulting_papers[0]
+
+    def get_paper_by_terms(self, terms: List[Paper], max_papers: int) -> List[Paper]:
+        return []

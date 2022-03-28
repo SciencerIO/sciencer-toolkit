@@ -9,6 +9,7 @@ class Policy(Enum):
 
     BY_DOI = "By DOI"
     BY_AUTHOR = "By Author"
+    BY_QUERY = "By Query"
 
 
 class HasPolicy:
