@@ -1,15 +1,16 @@
 """ Provider wrapper for Semantic Scholar API
 """
 from typing import List, Optional
-import requests
 import time
+import requests
 from ..policies import Policy
 from .provider import Provider
 from ..models import Paper
 
 
-s2_fields = ["title", "externalIds", "authors", "abstract", "year"]
-s2_url_single_fields = "".join([f"{field}," for field in s2_fields])[:-1]
+S2_FIELDS = ["title", "externalIds", "authors", "abstract", "year"]
+S2_URL_SINGLE_FIELDS = "".join([f"{field}," for field in S2_FIELDS])[:-1]
+
 
 def create_paper_from_json(paper_json) -> Paper:
     """Create a Paper Object based on available json dictionary
@@ -69,7 +70,7 @@ class SemanticScholarProvider(Provider):
     def get_paper_by_id(self, paper_id) -> Optional[Paper]:
         url = (
             f"https://api.semanticscholar.org/graph/v1/paper/{paper_id}?"
-            + f"fields={s2_url_single_fields}"
+            + f"fields={S2_URL_SINGLE_FIELDS}"
         )
         response = requests.get(url, headers={"x-api-key": self.__api_key})
 
@@ -77,41 +78,44 @@ class SemanticScholarProvider(Provider):
             print(
                 "⌛ Too many requests to Semantic Scholar. Waiting for 1 minute before restarting..."
             )
-            for s in range(0, 1 * 60):
-                print(f"{1*60 - s} seconds remaining", end="\r")
+            for seconds in range(0, 1 * 60):
+                print(f"{1*60 - seconds} seconds remaining", end="\r")
                 time.sleep(1)
 
             response = requests.get(url, headers={"x-api-key": self.__api_key})
 
         return create_paper_from_json(response.json())
 
-    def get_papers_by_author(self, author_id: str) -> List[Paper]:
+    def get_papers_by_author(self, author_id: str = "") -> List[Paper]:
         resulting_papers = set()
         offset_id = 0
-        
+
         while True:
 
             url = (
-            f"https://api.semanticscholar.org/graph/v1/author/{author_id}/papers?"
-            + f"fields={s2_url_single_fields}"
-            + f"&offset={offset_id}"
+                f"https://api.semanticscholar.org/graph/v1/author/{author_id}/papers?"
+                + f"fields={S2_URL_SINGLE_FIELDS}"
+                + f"&offset={offset_id}"
             )
 
             response = requests.get(url, headers={"x-api-key": self.__api_key})
 
             while response.status_code == 429:
                 print(
-                    "⌛ Too many requests to Semantic Scholar. Waiting for 1 minute before restarting..."
+                    "⌛ Too many requests to Semantic Scholar. \
+                    Waiting for 1 minute before restarting..."
                 )
-                for s in range(0, 1 * 60):
-                    print(f"{1*60 - s} seconds remaining", end="\r")
+                for seconds in range(0, 1 * 60):
+                    print(f"{1*60 - seconds} seconds remaining", end="\r")
                     time.sleep(1)
 
-                response = requests.get(url, headers={"x-api-key": self.__api_key})
+                response = requests.get(
+                    url, headers={"x-api-key": self.__api_key})
 
             response_json = response.json()
 
-            resulting_papers.update([create_paper_from_json(paper_json) for paper_json in response_json["data"]])
+            resulting_papers.update([create_paper_from_json(
+                paper_json) for paper_json in response_json["data"]])
 
             if "next" not in response_json:
                 break

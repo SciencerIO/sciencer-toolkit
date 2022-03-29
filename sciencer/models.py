@@ -7,8 +7,8 @@ from typing import List, Optional
 class Paper:
     """Model for a Paper"""
 
-    def __init__(self, id:str) -> None:
-        self.__paper_id: Optional[str] = id
+    def __init__(self, paper_id: str) -> None:
+        self.__paper_id: Optional[str] = paper_id
         self.__authors_id: List[str] = []
         self.__title: Optional[str] = None
         self.__id_doi: Optional[str] = None
@@ -291,7 +291,7 @@ class Paper:
 
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, Paper):
-           return __o.paper_id == self.paper_id 
+            return __o.paper_id == self.paper_id
         return False
 
     def __hash__(self) -> int:

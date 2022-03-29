@@ -15,7 +15,7 @@ class Provider(HasPolicy, ABC):
         Args:
             policies (List[Policy]): policies made available by this provider
         """
-        super().__init__(policies)
+        super(Provider).__init__(policies)
 
     @abstractmethod
     def get_paper_by_id(self, paper_id: str) -> Optional[Paper]:

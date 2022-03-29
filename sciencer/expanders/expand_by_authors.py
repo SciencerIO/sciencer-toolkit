@@ -21,7 +21,7 @@ class ExpandByAuthors(Expander):
 
         for paper in papers:
             authors_id.update(paper.authors)
-             
+
         for author_id in authors_id:
             for provider in providers:
                 author_papers = provider.get_papers_by_author(author_id)

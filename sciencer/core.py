@@ -5,8 +5,8 @@ from sciencer.collectors.collector import Collector
 from sciencer.expanders.expander import Expander
 from sciencer.filters.filter import Filter
 from sciencer.policies import Policy
-from .providers.provider import Provider
 from sciencer.models import Paper
+from .providers.provider import Provider
 
 
 class Callbacks:
@@ -63,7 +63,8 @@ class Sciencer:
         for provider_policy in provider_to_add.available_policies:
             if provider_policy not in self.__providers_by_policy:
                 self.__providers_by_policy[provider_policy] = []
-                self.__providers_by_policy[provider_policy].append(provider_to_add)
+                self.__providers_by_policy[provider_policy].append(
+                    provider_to_add)
 
     def add_collector(self, collector_to_add: Collector) -> None:
         """Add a collectors to Sciencer
@@ -103,7 +104,7 @@ class Sciencer:
 
     def iterate(
         self,
-        source_papers = None,
+        source_papers=None,
         remove_source_from_results: bool = False,
         callbacks: Callbacks = Callbacks(),
     ) -> List[Paper]:
@@ -121,10 +122,9 @@ class Sciencer:
             source_papers = set()
 
             for collector in self.__collectors:
-                providers_for_collector = self.__get_provider(
+                collected_papers = collector.execute(self.__get_provider(
                     collector.available_policies
-                )
-                collected_papers = collector.execute(providers_for_collector)
+                ))
                 source_papers.update(collected_papers)
                 for collected_paper in collected_papers:
                     callbacks.on_paper_collected(collected_paper)
@@ -134,9 +134,9 @@ class Sciencer:
         paper_after_expansion = set(source_papers)
 
         for expander in self.__expanders:
-            providers_for_expander = self.__get_provider(expander.available_policies)
             expansion_result = expander.execute(
-                papers=source_papers, providers=providers_for_expander
+                papers=source_papers, providers=self.__get_provider(
+                    expander.available_policies)
             )
             paper_after_expansion.update(expansion_result)
             callbacks.on_papers_expanded(source_papers, expansion_result)
@@ -161,6 +161,5 @@ class Sciencer:
 
         if remove_source_from_results:
             resulting_papers.difference_update(source_papers)
-
 
         return list(resulting_papers)

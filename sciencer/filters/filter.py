@@ -16,7 +16,7 @@ class Filter(HasPolicy, ABC):
         Args:
             policies (List[Policy]): policies needed for this filter to execute
         """
-        super().__init__(policies)
+        super(Filter).__init__(policies)
 
     @abstractmethod
     def is_valid(self, paper: Paper) -> bool:
