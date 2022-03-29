@@ -25,6 +25,11 @@ paper_2_externalIds = {
     "PubMed": "19872477",
 }
 
+# Terms:
+# Visited on 29/03/2022
+search_terms = ["literature", "graph", "semantic", "scholar"]
+search_result_title = "Construction of the Literature Graph in Semantic Scholar"
+
 
 class TestSemanticScholarProvider(unittest.TestCase):
     def setUp(self) -> None:
@@ -46,10 +51,20 @@ class TestSemanticScholarProvider(unittest.TestCase):
         self.assertEqual(paper_1_result.arxiv, paper_1_externalIds["ArXiv"])
         self.assertEqual(paper_1_result.dblp, paper_1_externalIds["DBLP"])
         self.assertEqual(paper_1_result.doi, paper_1_externalIds["DOI"])
-        self.assertEqual(paper_1_result.corpus, paper_1_externalIds["CorpusId"])
+        self.assertEqual(paper_1_result.corpus,
+                         paper_1_externalIds["CorpusId"])
 
         paper_2_result = self.__provider.get_paper_by_id(paper_2_id)
         self.assertIsNotNone(paper_2_result)
 
         self.assertEqual(paper_2_result.pubmed, paper_2_externalIds["PubMed"])
-        self.assertEqual(paper_2_result.corpus, paper_2_externalIds["CorpusId"])
+        self.assertEqual(paper_2_result.corpus,
+                         paper_2_externalIds["CorpusId"])
+
+    def test_search_papers(self):
+
+        papers = self.__provider.get_paper_by_terms(
+            search_terms, max_papers=100)
+
+        self.assertTrue(
+            any(paper.title == search_result_title for paper in papers))
