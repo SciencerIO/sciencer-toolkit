@@ -9,4 +9,4 @@ from . import filters
 from . import expanders
 
 from .core import Sciencer, Callbacks
-from .models import Paper
+from .models import Paper, PaperIDs

@@ -2,7 +2,6 @@
 """
 from abc import ABC, abstractmethod
 from typing import List
-
 from ..policies import HasPolicy
 from ..models import Paper
 from ..providers.provider import Provider
