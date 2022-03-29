@@ -8,8 +8,8 @@
 
 <p align="center">
     <a href="https://pypi.org/project/sciencer/">
-    <img src="https://img.shields.io/pypi/dm/sciencer.svg?style=flat-square"
-         alt="GitHub pull requests"></a>
+    <img src="https://img.shields.io/pypi/status/sciencer.svg?style=flat-square"
+         alt="PyPi Package Version"></a>
     <a href="https://github.com/SciencerIO/sciencer-toolkit/issues">
     <img src="https://img.shields.io/github/issues-raw/SciencerIO/sciencer-toolkit.svg?style=flat-square&logo=github&logoColor=white"
          alt="GitHub issues"></a>
