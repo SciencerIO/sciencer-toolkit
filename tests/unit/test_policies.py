@@ -16,3 +16,13 @@ class TestPolicy(TestCase):
 
         self.assertEqual(len(resulting_policies), 1)
         self.assertIn(Policy.BY_AUTHOR, resulting_policies)
+
+    def test_add_policy_after_creating(self):
+        policy_holder = Fake_Policy_Holder([])
+        
+        policy_holder.add_policy(Policy.BY_DOI)
+        
+        resulting_policies = policy_holder.available_policies
+
+        self.assertEqual(len(resulting_policies), 1)
+        self.assertIn(Policy.BY_DOI, resulting_policies)

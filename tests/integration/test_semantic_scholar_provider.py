@@ -1,4 +1,5 @@
 import unittest
+from sciencer.models import Paper, PaperIDs
 from sciencer.providers import SemanticScholarProvider
 from sciencer.providers.provider import Provider
 
@@ -41,15 +42,15 @@ class TestSemanticScholarProvider(unittest.TestCase):
         paper_1_result = self.__provider.get_paper_by_id(paper_1_id)
         self.assertIsNotNone(paper_1_result)
 
-        self.assertEqual(paper_1_result.mag, paper_1_externalIds["MAG"])
-        self.assertEqual(paper_1_result.acl, paper_1_externalIds["ACL"])
-        self.assertEqual(paper_1_result.arxiv, paper_1_externalIds["ArXiv"])
-        self.assertEqual(paper_1_result.dblp, paper_1_externalIds["DBLP"])
-        self.assertEqual(paper_1_result.doi, paper_1_externalIds["DOI"])
-        self.assertEqual(paper_1_result.corpus, paper_1_externalIds["CorpusId"])
+        self.assertEqual(paper_1_result.get_external_id(PaperIDs.LABEL.MAG), paper_1_externalIds["MAG"])
+        self.assertEqual(paper_1_result.get_external_id(PaperIDs.LABEL.ACL), paper_1_externalIds["ACL"])
+        self.assertEqual(paper_1_result.get_external_id(PaperIDs.LABEL.ARXIV), paper_1_externalIds["ArXiv"])
+        self.assertEqual(paper_1_result.get_external_id(PaperIDs.LABEL.DBLP), paper_1_externalIds["DBLP"])
+        self.assertEqual(paper_1_result.get_external_id(PaperIDs.LABEL.DOI), paper_1_externalIds["DOI"])
+        self.assertEqual(paper_1_result.get_external_id(PaperIDs.LABEL.CORPUS), paper_1_externalIds["CorpusId"])
 
         paper_2_result = self.__provider.get_paper_by_id(paper_2_id)
         self.assertIsNotNone(paper_2_result)
 
-        self.assertEqual(paper_2_result.pubmed, paper_2_externalIds["PubMed"])
-        self.assertEqual(paper_2_result.corpus, paper_2_externalIds["CorpusId"])
+        self.assertEqual(paper_2_result.get_external_id(PaperIDs.LABEL.PUBMED), paper_2_externalIds["PubMed"])
+        self.assertEqual(paper_2_result.get_external_id(PaperIDs.LABEL.CORPUS), paper_2_externalIds["CorpusId"])
