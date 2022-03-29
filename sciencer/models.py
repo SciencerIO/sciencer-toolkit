@@ -27,11 +27,11 @@ class PaperIDs:
         self.paper_id: Optional[str] = paper_id
         self.__ids : Dict[PaperIDs.LABEL,str] = {}
 
-    def add_id(self, name:str, value:str) -> None:
+    def add_id(self, name:PaperIDs.LABEL, value:str) -> None:
         """Adds an id. If it already exists, overrites it
 
         Args:
-            name (str): name of the id
+            name (PaperIDs.LABEL): name of the id
             value (str): value of the id
         """
         self.__ids[name] = value
@@ -60,19 +60,19 @@ class Paper:
         self.__year: Optional[int] = None
         self.__ids: PaperIDs = PaperIDs(paper_id=paper_id)
 
-    def get_external_id(self, name: str) -> Optional[str]:
+    def get_external_id(self, name: PaperIDs.LABEL) -> Optional[str]:
         """Getter for paper's external IDs
 
         Returns:
-            str: the paper's id. If it does not exist, returns None
+            PaperIDs.LABEL: the paper's id. If it does not exist, returns None
         """
         return self.__ids.get_id(name)
 
-    def set_external_id(self, name: str, value:str) -> Paper:
+    def set_external_id(self, name: PaperIDs.LABEL, value:str) -> Paper:
         """Setter for paper's external ID
 
         Args:
-            name (str): The new external ID name
+            name (PaperIDs.LABEL): The new external ID name
             value (str): The new external ID value
 
         Returns:

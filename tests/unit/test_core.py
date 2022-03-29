@@ -1,6 +1,6 @@
 from unittest import TestCase
 from sciencer import Sciencer
-from sciencer.models import Paper
+from sciencer.models import Paper, PaperIDs
 from sciencer.collectors import CollectByAuthorID
 from tests.utils import FakeProvider
 
@@ -10,7 +10,7 @@ author_1_name = "author_1_name"
 
 paper_1 = Paper("id_1")
 paper_1.add_author(author_1_id)
-paper_1.set_external_id("DOI",paper_1_doi)
+paper_1.set_external_id(PaperIDs.LABEL.DOI,paper_1_doi)
 
 
 class TestSciencerIterations(TestCase):

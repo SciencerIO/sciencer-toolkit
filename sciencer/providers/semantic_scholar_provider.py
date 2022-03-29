@@ -25,25 +25,25 @@ def create_paper_from_json(paper_json) -> Paper:
 
     # External IDS
     if "DOI" in paper_json["externalIds"]:
-        paper.set_external_id(PaperIDs.LABEL.DOI,paper_json["externalIds"]["DOI"])
+        paper.set_external_id(PaperIDs.LABEL.DOI, paper_json["externalIds"]["DOI"])
 
     if "MAG" in paper_json["externalIds"]:
-        paper.set_external_id(PaperIDs.LABEL.MAG,paper_json["externalIds"]["MAG"])
+        paper.set_external_id(PaperIDs.LABEL.MAG, paper_json["externalIds"]["MAG"])
 
     if "CorpusId" in paper_json["externalIds"]:
-        paper.set_external_id(PaperIDs.LABEL.CORPUS,paper_json["externalIds"]["CorpusId"])
+        paper.set_external_id(PaperIDs.LABEL.CORPUS, paper_json["externalIds"]["CorpusId"])
 
     if "PubMed" in paper_json["externalIds"]:
-        paper.set_external_id(PaperIDs.LABEL.PUBMED,paper_json["externalIds"]["PubMed"])
+        paper.set_external_id(PaperIDs.LABEL.PUBMED, paper_json["externalIds"]["PubMed"])
 
     if "DBLP" in paper_json["externalIds"]:
-        paper.set_external_id(PaperIDs.LABEL.DBLP,paper_json["externalIds"]["DBLP"])
+        paper.set_external_id(PaperIDs.LABEL.DBLP, paper_json["externalIds"]["DBLP"])
 
     if "ArXiv" in paper_json["externalIds"]:
-        paper.set_external_id(PaperIDs.LABEL.ARXIV,paper_json["externalIds"]["ArXiv"])
+        paper.set_external_id(PaperIDs.LABEL.ARXIV, paper_json["externalIds"]["ArXiv"])
 
     if "ACL" in paper_json["externalIds"]:
-        paper.set_external_id(PaperIDs.LABEL.ACL,paper_json["externalIds"]["ACL"])
+        paper.set_external_id(PaperIDs.LABEL.ACL, paper_json["externalIds"]["ACL"])
 
     paper.set_title(paper_json["title"])
 
