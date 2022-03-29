@@ -26,6 +26,11 @@ paper_2_externalIds = {
     "PubMed": "19872477",
 }
 
+# Terms:
+# Visited on 29/03/2022
+search_terms = ["literature", "graph", "semantic", "scholar"]
+search_result_title = "Construction of the Literature Graph in Semantic Scholar"
+
 
 class TestSemanticScholarProvider(unittest.TestCase):
     def setUp(self) -> None:

@@ -31,3 +31,15 @@ class Provider(HasPolicy, ABC):
         Returns:
             List[Paper]: The list of papers associated with an author.
         """
+
+    @abstractmethod
+    def get_paper_by_terms(self, terms: List[str], max_papers: int) -> List[Paper]:
+        """Fetches the papers that have the following terms.
+
+        Args:
+            terms (List[str]): terms included in the papers to be retrieved
+            max_paper (int): the maximum number of papers to retrieve
+
+        Returns:
+            List[Paper]: The list of papers that include the terms
+        """

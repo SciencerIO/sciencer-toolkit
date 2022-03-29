@@ -63,6 +63,8 @@ sciencer.add_provider(SemanticScholarProvider())
 sciencer.add_collector(sciencer.collectors.CollectByAuthorID("John Doe"))
 ## this collector will collect the paper with DOI "1234567890" into the set
 sciencer.add_collector(sciencer.collectors.CollectByDOI("1234567890"))
+## this collector will collect the papers with 
+sciencer.add_collector(sciencer.collectors.CollectByTerms(["Term 1", "Term 2", "Term 3"]))
 
 # Define expanders
 ## this expander will gather all known papers written by authors in the current set.
@@ -85,10 +87,11 @@ For more examples on how to use the Sciencer toolkit, please check the directory
 
 ## Collectors
 
-| Name      | Description                                  | Parameters                   |
-| --------- | :------------------------------------------- | :--------------------------- |
-| Author ID | Collects all the papers written by an author | Authors's SemanticScholar ID |
-| Paper DOI | Collects a paper by its DOI                  | Paper's DOI                  |
+| Name      | Description                                  | Parameters                                |
+| --------- | :------------------------------------------- | :---------------------------------------- |
+| Author ID | Collects all the papers written by an author | Authors's SemanticScholar ID              |
+| Paper DOI | Collects a paper by its DOI                  | Paper's DOI                               |
+| Terms     | Collects papers by terms                     | Query Terms <br> Maximum Number of Papers |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
