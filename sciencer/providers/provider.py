@@ -33,12 +33,12 @@ class Provider(HasPolicy, ABC):
         """
 
     @abstractmethod
-    def get_paper_by_terms(self, terms: List[Paper], max_papers: int) -> List[Paper]:
+    def get_paper_by_terms(self, terms: List[str], max_papers: int) -> List[Paper]:
         """Fetches the papers that have the following terms.
 
         Args:
-            terms (List[Paper]): terms included in the papers to be retrieved
-            max_paper (int): the maximum number of papers to retrieve            
+            terms (List[str]): terms included in the papers to be retrieved
+            max_paper (int): the maximum number of papers to retrieve
 
         Returns:
             List[Paper]: The list of papers that include the terms

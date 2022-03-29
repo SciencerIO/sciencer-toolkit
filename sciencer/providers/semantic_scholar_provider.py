@@ -127,7 +127,7 @@ class SemanticScholarProvider(Provider):
 
         return list(resulting_papers)
 
-    def get_paper_by_terms(self, terms: List[Paper], max_papers: int) -> List[Paper]:
+    def get_paper_by_terms(self, terms: List[str], max_papers: int) -> List[Paper]:
         resulting_papers = set()
         offset_id = 0
         term_query = ''.join([f"{term}+"for term in terms])[:-1]
@@ -136,18 +136,19 @@ class SemanticScholarProvider(Provider):
             url = (
                 f"https://api.semanticscholar.org/graph/v1/paper/search?query={term_query}"
                 + f"&offset={offset_id}"
-                + f"&limit=100"
-                + f"&fields={s2_url_single_fields}"
+                + "&limit=100"
+                + f"&fields={S2_URL_SINGLE_FIELDS}"
             )
 
             response = requests.get(url, headers={"x-api-key": self.__api_key})
 
             while response.status_code == 429:
                 print(
-                    "⌛ Too many requests to Semantic Scholar. Waiting for 1 minute before restarting..."
+                    "⌛ Too many requests to Semantic Scholar. \
+                    Waiting for 1 minute before restarting..."
                 )
-                for s in range(0, 1 * 60):
-                    print(f"{1*60 - s} seconds remaining", end="\r")
+                for seconds in range(0, 1 * 60):
+                    print(f"{1*60 - seconds} seconds remaining", end="\r")
                     time.sleep(1)
 
                 response = requests.get(
