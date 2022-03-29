@@ -22,4 +22,11 @@ class FakeProvider(Provider):
         return resulting_papers[0]
 
     def get_paper_by_terms(self, terms: List[Paper], max_papers: int) -> List[Paper]:
-        return []
+
+        resulting_papers = list(filter(lambda paper: all(
+            term in paper.abstract for term in terms), self.__papers))
+
+        if len(resulting_papers) > max_papers:
+            return resulting_papers[max_papers:]
+
+        return resulting_papers

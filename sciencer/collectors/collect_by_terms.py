@@ -24,10 +24,10 @@ class CollectByTerms(Collector):
 
         papers: List[Paper] = []
         for provider in providers:
-            papers = provider.get_paper_by_terms(
+            provider_papers = provider.get_paper_by_terms(
                 self.__terms, self.__max_papers)
-            if len(papers) > 0:
-                papers.extend(papers)
+            if len(provider_papers) > 0:
+                papers.extend(provider_papers)
                 break
 
         return papers
