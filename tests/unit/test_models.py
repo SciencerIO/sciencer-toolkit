@@ -1,5 +1,5 @@
 import unittest
-from sciencer.models import Paper
+from sciencer.models import Paper, PaperIDs
 
 
 correct_text_value = "CORRECT_VALUE"
@@ -30,92 +30,92 @@ class TestPaperModel(unittest.TestCase):
 
     def test_get_id_doi_after_setting(self):
         paper = Paper("id_1")
-        paper.set_doi(correct_text_value)
+        paper.set_external_id(PaperIDs.LABEL.DOI,correct_text_value)
 
-        resulting_id_doi = paper.doi
+        resulting_id_doi = paper.get_external_id(PaperIDs.LABEL.DOI)
         self.assertEqual(resulting_id_doi, correct_text_value)
 
     def test_get_id_doi_without_setting(self):
         paper = Paper("id_1")
-        resulting_id_doi = paper.doi
+        resulting_id_doi = paper.get_external_id(PaperIDs.LABEL.DOI)
 
         self.assertIsNone(resulting_id_doi)
 
     def test_get_id_mag_after_setting(self):
         paper = Paper("id_1")
-        paper.set_mag(correct_text_value)
+        paper.set_external_id(PaperIDs.LABEL.MAG,correct_text_value)
 
-        resulting_id_mag = paper.mag
+        resulting_id_mag = paper.get_external_id(PaperIDs.LABEL.MAG)
         self.assertEqual(resulting_id_mag, correct_text_value)
 
     def test_get_id_mag_without_setting(self):
         paper = Paper("id_1")
-        resulting_id_mag = paper.mag
+        resulting_id_mag = paper.get_external_id(PaperIDs.LABEL.MAG)
 
         self.assertIsNone(resulting_id_mag)
 
     def test_get_id_corpus_after_setting(self):
         paper = Paper("id_1")
-        paper.set_corpus(correct_text_value)
+        paper.set_external_id(PaperIDs.LABEL.CORPUS,correct_text_value)
 
-        resulting_id_corpus = paper.corpus
+        resulting_id_corpus = paper.get_external_id(PaperIDs.LABEL.CORPUS)
         self.assertEqual(resulting_id_corpus, correct_text_value)
 
     def test_get_corpus_without_setting(self):
         paper = Paper("id_1")
-        resulting_id_corpus = paper.corpus
+        resulting_id_corpus = paper.get_external_id(PaperIDs.LABEL.CORPUS)
 
         self.assertIsNone(resulting_id_corpus)
 
     def test_get_id_pubmed_after_setting(self):
         paper = Paper("id_1")
-        paper.set_pubmed(correct_text_value)
+        paper.set_external_id(PaperIDs.LABEL.PUBMED,correct_text_value)
 
-        resulting_id_pubmed = paper.pubmed
+        resulting_id_pubmed = paper.get_external_id(PaperIDs.LABEL.PUBMED)
         self.assertEqual(resulting_id_pubmed, correct_text_value)
 
     def test_get_pubmed_without_setting(self):
         paper = Paper("id_1")
-        resulting_id_pubmed = paper.pubmed
+        resulting_id_pubmed = paper.get_external_id(PaperIDs.LABEL.PUBMED)
 
         self.assertIsNone(resulting_id_pubmed)
 
     def test_get_id_dblp_after_setting(self):
         paper = Paper("id_1")
-        paper.set_dblp(correct_text_value)
+        paper.set_external_id(PaperIDs.LABEL.DBLP,correct_text_value)
 
-        resulting_id_dblp = paper.dblp
+        resulting_id_dblp = paper.get_external_id(PaperIDs.LABEL.DBLP)
         self.assertEqual(resulting_id_dblp, correct_text_value)
 
     def test_get_dblp_without_setting(self):
         paper = Paper("id_1")
-        resulting_id_dblp = paper.dblp
+        resulting_id_dblp = paper.get_external_id(PaperIDs.LABEL.DBLP)
 
         self.assertIsNone(resulting_id_dblp)
 
     def test_get_id_arxiv_after_setting(self):
         paper = Paper("id_1")
-        paper.set_arxiv(correct_text_value)
+        paper.set_external_id(PaperIDs.LABEL.ARXIV,correct_text_value)
 
-        resulting_id_arxiv = paper.arxiv
+        resulting_id_arxiv = paper.get_external_id(PaperIDs.LABEL.ARXIV)
         self.assertEqual(resulting_id_arxiv, correct_text_value)
 
     def test_get_arxiv_without_setting(self):
         paper = Paper("id_1")
-        resulting_id_arxiv = paper.arxiv
+        resulting_id_arxiv = paper.get_external_id(PaperIDs.LABEL.ARXIV)
 
         self.assertIsNone(resulting_id_arxiv)
 
     def test_get_id_acl_after_setting(self):
         paper = Paper("id_1")
-        paper.set_acl(correct_text_value)
+        paper.set_external_id(PaperIDs.LABEL.ACL,correct_text_value)
 
-        resulting_id_acl = paper.acl
+        resulting_id_acl = paper.get_external_id(PaperIDs.LABEL.ACL)
         self.assertEqual(resulting_id_acl, correct_text_value)
 
     def test_get_acl_without_setting(self):
         paper = Paper("id_1")
-        resulting_id_acl = paper.acl
+        resulting_id_acl = paper.get_external_id(PaperIDs.LABEL.ACL)
 
         self.assertIsNone(resulting_id_acl)
 

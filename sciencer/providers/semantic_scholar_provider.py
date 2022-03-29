@@ -1,15 +1,16 @@
 """ Provider wrapper for Semantic Scholar API
 """
 from typing import List, Optional
-import requests
 import time
+import requests
 from ..policies import Policy
 from .provider import Provider
-from ..models import Paper
+from ..models import Paper, PaperIDs
 
 
-s2_fields = ["title", "externalIds", "authors", "abstract", "year"]
-s2_url_single_fields = "".join([f"{field}," for field in s2_fields])[:-1]
+S2_FIELDS = ["title", "externalIds", "authors", "abstract", "year"]
+S2_URL_SINGLE_FIELDS = "".join([f"{field}," for field in S2_FIELDS])[:-1]
+
 
 
 def create_paper_from_json(paper_json) -> Paper:
@@ -25,25 +26,25 @@ def create_paper_from_json(paper_json) -> Paper:
 
     # External IDS
     if "DOI" in paper_json["externalIds"]:
-        paper.set_doi(paper_json["externalIds"]["DOI"])
+        paper.set_external_id(PaperIDs.LABEL.DOI, paper_json["externalIds"]["DOI"])
 
     if "MAG" in paper_json["externalIds"]:
-        paper.set_mag(paper_json["externalIds"]["MAG"])
+        paper.set_external_id(PaperIDs.LABEL.MAG, paper_json["externalIds"]["MAG"])
 
     if "CorpusId" in paper_json["externalIds"]:
-        paper.set_corpus(paper_json["externalIds"]["CorpusId"])
+        paper.set_external_id(PaperIDs.LABEL.CORPUS, paper_json["externalIds"]["CorpusId"])
 
     if "PubMed" in paper_json["externalIds"]:
-        paper.set_pubmed(paper_json["externalIds"]["PubMed"])
+        paper.set_external_id(PaperIDs.LABEL.PUBMED, paper_json["externalIds"]["PubMed"])
 
     if "DBLP" in paper_json["externalIds"]:
-        paper.set_dblp(paper_json["externalIds"]["DBLP"])
+        paper.set_external_id(PaperIDs.LABEL.DBLP, paper_json["externalIds"]["DBLP"])
 
     if "ArXiv" in paper_json["externalIds"]:
-        paper.set_arxiv(paper_json["externalIds"]["ArXiv"])
+        paper.set_external_id(PaperIDs.LABEL.ARXIV, paper_json["externalIds"]["ArXiv"])
 
     if "ACL" in paper_json["externalIds"]:
-        paper.set_acl(paper_json["externalIds"]["ACL"])
+        paper.set_external_id(PaperIDs.LABEL.ACL, paper_json["externalIds"]["ACL"])
 
     paper.set_title(paper_json["title"])
 
@@ -72,7 +73,7 @@ class SemanticScholarProvider(Provider):
     def get_paper_by_id(self, paper_id) -> Optional[Paper]:
         url = (
             f"https://api.semanticscholar.org/graph/v1/paper/{paper_id}?"
-            + f"fields={s2_url_single_fields}"
+            + f"fields={S2_URL_SINGLE_FIELDS}"
         )
         response = requests.get(url, headers={"x-api-key": self.__api_key})
 
@@ -80,15 +81,15 @@ class SemanticScholarProvider(Provider):
             print(
                 "⌛ Too many requests to Semantic Scholar. Waiting for 1 minute before restarting..."
             )
-            for s in range(0, 1 * 60):
-                print(f"{1*60 - s} seconds remaining", end="\r")
+            for seconds in range(0, 1 * 60):
+                print(f"{1*60 - seconds} seconds remaining", end="\r")
                 time.sleep(1)
 
             response = requests.get(url, headers={"x-api-key": self.__api_key})
 
         return create_paper_from_json(response.json())
 
-    def get_papers_by_author(self, author_id: str) -> List[Paper]:
+    def get_papers_by_author(self, author_id: str = "") -> List[Paper]:
         resulting_papers = set()
         offset_id = 0
 
@@ -96,7 +97,7 @@ class SemanticScholarProvider(Provider):
 
             url = (
                 f"https://api.semanticscholar.org/graph/v1/author/{author_id}/papers?"
-                + f"fields={s2_url_single_fields}"
+                + f"fields={S2_URL_SINGLE_FIELDS}"
                 + f"&offset={offset_id}"
             )
 
@@ -104,10 +105,11 @@ class SemanticScholarProvider(Provider):
 
             while response.status_code == 429:
                 print(
-                    "⌛ Too many requests to Semantic Scholar. Waiting for 1 minute before restarting..."
+                    "⌛ Too many requests to Semantic Scholar. \
+                    Waiting for 1 minute before restarting..."
                 )
-                for s in range(0, 1 * 60):
-                    print(f"{1*60 - s} seconds remaining", end="\r")
+                for seconds in range(0, 1 * 60):
+                    print(f"{1*60 - seconds} seconds remaining", end="\r")
                     time.sleep(1)
 
                 response = requests.get(

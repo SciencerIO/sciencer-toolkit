@@ -1,150 +1,84 @@
 """Models used by Sciencer
 """
 from __future__ import annotations
-from typing import List, Optional
+from enum import Enum
+from typing import List, Optional,Dict
 
+class PaperIDs:
+    """Paper IDs wrapper
+    """
+
+    class LABEL(Enum):
+        """External IDs label """
+        DOI = "DOI"
+        MAG = "MAG"
+        CORPUS = "CorpusId"
+        PUBMED = "PubMed"
+        DBLP = "DBLP"
+        ARXIV = "ArXiv"
+        ACL = "ACL"
+
+    def __init__(self, paper_id: str) -> None:
+        """Creates a model to store Paper IDs
+
+        Args:
+            paper_id (str): the main ID of the paper
+        """
+        self.paper_id: Optional[str] = paper_id
+        self.__ids : Dict[PaperIDs.LABEL,str] = {}
+
+    def add_id(self, name:PaperIDs.LABEL, value:str) -> None:
+        """Adds an id. If it already exists, overrites it
+
+        Args:
+            name (PaperIDs.LABEL): name of the id
+            value (str): value of the id
+        """
+        self.__ids[name] = value
+
+    def get_id(self, name:PaperIDs.LABEL) -> Optional[str]:
+        """Gets an ID by its name
+
+        Args:
+            name (PaperIDs.LABEL): name of the ID
+
+        Returns:
+            Optional[str]: The value of the ID. If it does not exist, returns None
+        """
+        if name not in self.__ids:
+            return None
+
+        return self.__ids[name]
 
 class Paper:
     """Model for a Paper"""
 
-    def __init__(self, id:str) -> None:
-        self.__paper_id: Optional[str] = id
+    def __init__(self, paper_id: str) -> None:
         self.__authors_id: List[str] = []
         self.__title: Optional[str] = None
-        self.__id_doi: Optional[str] = None
-        self.__id_mag: Optional[str] = None
-        self.__id_corpus: Optional[str] = None
-        self.__id_pubmed: Optional[str] = None
-        self.__id_dblp: Optional[str] = None
-        self.__id_arxiv: Optional[str] = None
-        self.__id_acl: Optional[str] = None
         self.__abstract: Optional[str] = None
         self.__year: Optional[int] = None
+        self.__ids: PaperIDs = PaperIDs(paper_id=paper_id)
 
-    @property
-    def acl(self) -> Optional[str]:
-        """Getter for paper's acl
+    def get_external_id(self, name: PaperIDs.LABEL) -> Optional[str]:
+        """Getter for paper's external IDs
 
         Returns:
-            str: the paper's acl id
+            PaperIDs.LABEL: the paper's id. If it does not exist, returns None
         """
-        return self.__id_acl
+        return self.__ids.get_id(name)
 
-    def set_acl(self, acl_id: str) -> Paper:
-        """Setter for paper's acl
+    def set_external_id(self, name: PaperIDs.LABEL, value:str) -> Paper:
+        """Setter for paper's external ID
 
         Args:
-            acl (str): The new acl
+            name (PaperIDs.LABEL): The new external ID name
+            value (str): The new external ID value
 
         Returns:
             Paper: the modified paper
         """
-        self.__id_acl = acl_id
-        return self
-
-    @property
-    def arxiv(self) -> Optional[str]:
-        """Getter for paper's arxiv
-
-        Returns:
-            str: the paper's arxiv id
-        """
-        return self.__id_arxiv
-
-    def set_arxiv(self, arxiv_id: str) -> Paper:
-        """Setter for paper's arxiv
-
-        Args:
-            arxiv (str): The new arxiv
-
-        Returns:
-            Paper: the modified paper
-        """
-        self.__id_arxiv = arxiv_id
-        return self
-
-    @property
-    def dblp(self) -> Optional[str]:
-        """Getter for paper's dblp
-
-        Returns:
-            str: the paper's dblp id
-        """
-        return self.__id_dblp
-
-    def set_dblp(self, dblp_id: str) -> Paper:
-        """Setter for paper's dblp
-
-        Args:
-            dblp (str): The new dblp
-
-        Returns:
-            Paper: the modified paper
-        """
-        self.__id_dblp = dblp_id
-        return self
-
-    @property
-    def pubmed(self) -> Optional[str]:
-        """Getter for paper's pubMed
-
-        Returns:
-            str: the paper's pubMed id
-        """
-        return self.__id_pubmed
-
-    def set_pubmed(self, pubmed_id: str) -> Paper:
-        """Setter for paper's pubMed
-
-        Args:
-            pubMed (str): The new pubMed
-
-        Returns:
-            Paper: the modified paper
-        """
-        self.__id_pubmed = pubmed_id
-        return self
-
-    @property
-    def corpus(self) -> Optional[str]:
-        """Getter for paper's corpus
-
-        Returns:
-            str: the paper's corpus id
-        """
-        return self.__id_corpus
-
-    def set_corpus(self, corpus_id: str) -> Paper:
-        """Setter for paper's corpus
-
-        Args:
-            corpus (str): The new corpus
-
-        Returns:
-            Paper: the modified paper
-        """
-        self.__id_corpus = corpus_id
-        return self
-
-    @property
-    def mag(self) -> Optional[str]:
-        """Getter for paper's mag
-
-        Returns:
-            str: the paper's mag id
-        """
-        return self.__id_mag
-
-    def set_mag(self, mag_id: str) -> Paper:
-        """Setter for paper's mag
-
-        Args:
-            mag (str): The new mag
-
-        Returns:
-            Paper: the modified paper
-        """
-        self.__id_mag = mag_id
+        self.__ids.add_id(name, value)
         return self
 
     @property
@@ -154,40 +88,7 @@ class Paper:
         Returns:
             str: the paper's s2 id
         """
-        return self.__paper_id
-
-    def set_s2(self, s2_id: str) -> Paper:
-        """Setter for paper's s2
-
-        Args:
-            s2 (str): The new s2
-
-        Returns:
-            Paper: the modified paper
-        """
-        self.__paper_id = s2_id
-        return self
-
-    @property
-    def doi(self) -> Optional[str]:
-        """Getter for paper's DOI'
-
-        Returns:
-            str: the paper's doi
-        """
-        return self.__id_doi
-
-    def set_doi(self, doi: str) -> Paper:
-        """Setter for paper's DOI
-
-        Args:
-            doi (str): The new DOI
-
-        Returns:
-            Paper: the modified paper
-        """
-        self.__id_doi = doi
-        return self
+        return self.__ids.paper_id
 
     @property
     def title(self) -> Optional[str]:
@@ -291,7 +192,7 @@ class Paper:
 
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, Paper):
-           return __o.paper_id == self.paper_id 
+            return __o.paper_id == self.paper_id
         return False
 
     def __hash__(self) -> int:

@@ -11,7 +11,7 @@ class Expander(HasPolicy, ABC):
     """Generic expansion job"""
 
     @abstractmethod
-    def execute(self, papers: List[Paper], providers: List[Provider]) -> List[Paper]:      
+    def execute(self, papers: List[Paper], providers: List[Provider]) -> List[Paper]:
         """Executes the expansion.
 
         Args:
