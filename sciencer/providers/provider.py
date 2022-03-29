@@ -46,6 +46,7 @@ class Provider(HasPolicy, ABC):
 
         Args:
             terms (List[Paper]): terms included in the papers to be retrieved
+            max_paper (int): the maximum number of papers to retrieve            
 
         Returns:
             List[Paper]: The list of papers that include the terms

@@ -66,7 +66,8 @@ class SemanticScholarProvider(Provider):
     def __init__(self, api_key: str = "") -> None:
         self.__api_key: str = api_key
         super().__init__(policies=[Policy.BY_DOI,
-                                   Policy.BY_AUTHOR, Policy.BY_QUERY])
+                                   Policy.BY_AUTHOR,
+                                   Policy.BY_QUERY])
 
     def get_paper_by_id(self, paper_id) -> Optional[Paper]:
         url = (
@@ -90,13 +91,13 @@ class SemanticScholarProvider(Provider):
     def get_papers_by_author(self, author_id: str) -> List[Paper]:
         resulting_papers = set()
         offset_id = 0
-        
+
         while True:
 
             url = (
-            f"https://api.semanticscholar.org/graph/v1/author/{author_id}/papers?"
-            + f"fields={s2_url_single_fields}"
-            + f"&offset={offset_id}"
+                f"https://api.semanticscholar.org/graph/v1/author/{author_id}/papers?"
+                + f"fields={s2_url_single_fields}"
+                + f"&offset={offset_id}"
             )
 
             response = requests.get(url, headers={"x-api-key": self.__api_key})
