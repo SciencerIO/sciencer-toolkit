@@ -2,21 +2,12 @@
 """
 
 from abc import ABC, abstractmethod
-from typing import List
-from ..policies import HasPolicy, Policy
+from ..policies import HasPolicy
 from ..models import Paper
 
 
 class Filter(HasPolicy, ABC):
     """Base class for filters"""
-
-    def __init__(self, policies: List[Policy]) -> None:
-        """Creates a new Filter
-
-        Args:
-            policies (List[Policy]): policies needed for this filter to execute
-        """
-        super(Filter).__init__(policies)
 
     @abstractmethod
     def is_valid(self, paper: Paper) -> bool:
