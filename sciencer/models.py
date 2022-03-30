@@ -2,7 +2,8 @@
 """
 from __future__ import annotations
 from enum import Enum
-from typing import List, Optional,Dict
+from typing import List, Optional, Dict, Set
+
 
 class PaperIDs:
     """Paper IDs wrapper
@@ -25,9 +26,9 @@ class PaperIDs:
             paper_id (str): the main ID of the paper
         """
         self.paper_id: Optional[str] = paper_id
-        self.__ids : Dict[PaperIDs.LABEL,str] = {}
+        self.__ids: Dict[PaperIDs.LABEL, str] = {}
 
-    def add_id(self, name:PaperIDs.LABEL, value:str) -> None:
+    def add_id(self, name: PaperIDs.LABEL, value: str) -> None:
         """Adds an id. If it already exists, overrites it
 
         Args:
@@ -36,7 +37,7 @@ class PaperIDs:
         """
         self.__ids[name] = value
 
-    def get_id(self, name:PaperIDs.LABEL) -> Optional[str]:
+    def get_id(self, name: PaperIDs.LABEL) -> Optional[str]:
         """Gets an ID by its name
 
         Args:
@@ -50,6 +51,7 @@ class PaperIDs:
 
         return self.__ids[name]
 
+
 class Paper:
     """Model for a Paper"""
 
@@ -59,6 +61,7 @@ class Paper:
         self.__abstract: Optional[str] = None
         self.__year: Optional[int] = None
         self.__ids: PaperIDs = PaperIDs(paper_id=paper_id)
+        self.__references_ids: Set[str] = set()
 
     def get_external_id(self, name: PaperIDs.LABEL) -> Optional[str]:
         """Getter for paper's external IDs
@@ -68,7 +71,7 @@ class Paper:
         """
         return self.__ids.get_id(name)
 
-    def set_external_id(self, name: PaperIDs.LABEL, value:str) -> Paper:
+    def set_external_id(self, name: PaperIDs.LABEL, value: str) -> Paper:
         """Setter for paper's external ID
 
         Args:
@@ -189,6 +192,23 @@ class Paper:
         """
         self.__abstract = abstract
         return self
+
+    def add_reference(self, reference_id: str) -> None:
+        """Add a new reference to this paper
+
+        Args:
+            reference_id (str): the referenced paper id
+        """
+        self.__references_ids.add(reference_id)
+
+    @property
+    def references(self) -> List[str]:
+        """Getter for paper's references'
+
+        Returns:
+            List[str]: the list of referenced papers' ids
+        """
+        return list(self.__references_ids)
 
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, Paper):

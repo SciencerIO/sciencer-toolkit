@@ -8,9 +8,46 @@ from .provider import Provider
 from ..models import Paper, PaperIDs
 
 
-S2_FIELDS = ["title", "externalIds", "authors", "abstract", "year"]
+S2_FIELDS = ["title", "externalIds", "authors",
+             "abstract", "year", "references.paperId"]
 S2_URL_SINGLE_FIELDS = "".join([f"{field}," for field in S2_FIELDS])[:-1]
 
+
+def add_external_ids(paper, external_ids_json) -> None:
+    """Add external ids to a paper
+
+    Args:
+        paper (_type_): paper to receive the external ids
+        external_ids_json (_type_): the external ids to add
+    """
+    # External IDS
+    if "DOI" in external_ids_json:
+        paper.set_external_id(PaperIDs.LABEL.DOI,
+                              external_ids_json["DOI"])
+
+    if "MAG" in external_ids_json:
+        paper.set_external_id(PaperIDs.LABEL.MAG,
+                              external_ids_json["MAG"])
+
+    if "CorpusId" in external_ids_json:
+        paper.set_external_id(PaperIDs.LABEL.CORPUS,
+                              external_ids_json["CorpusId"])
+
+    if "PubMed" in external_ids_json:
+        paper.set_external_id(PaperIDs.LABEL.PUBMED,
+                              external_ids_json["PubMed"])
+
+    if "DBLP" in external_ids_json:
+        paper.set_external_id(PaperIDs.LABEL.DBLP,
+                              external_ids_json["DBLP"])
+
+    if "ArXiv" in external_ids_json:
+        paper.set_external_id(PaperIDs.LABEL.ARXIV,
+                              external_ids_json["ArXiv"])
+
+    if "ACL" in external_ids_json:
+        paper.set_external_id(PaperIDs.LABEL.ACL,
+                              external_ids_json["ACL"])
 
 
 def create_paper_from_json(paper_json) -> Paper:
@@ -24,29 +61,10 @@ def create_paper_from_json(paper_json) -> Paper:
     """
     paper = Paper(paper_json["paperId"])
 
-    # External IDS
-    if "DOI" in paper_json["externalIds"]:
-        paper.set_external_id(PaperIDs.LABEL.DOI, paper_json["externalIds"]["DOI"])
-
-    if "MAG" in paper_json["externalIds"]:
-        paper.set_external_id(PaperIDs.LABEL.MAG, paper_json["externalIds"]["MAG"])
-
-    if "CorpusId" in paper_json["externalIds"]:
-        paper.set_external_id(PaperIDs.LABEL.CORPUS, paper_json["externalIds"]["CorpusId"])
-
-    if "PubMed" in paper_json["externalIds"]:
-        paper.set_external_id(PaperIDs.LABEL.PUBMED, paper_json["externalIds"]["PubMed"])
-
-    if "DBLP" in paper_json["externalIds"]:
-        paper.set_external_id(PaperIDs.LABEL.DBLP, paper_json["externalIds"]["DBLP"])
-
-    if "ArXiv" in paper_json["externalIds"]:
-        paper.set_external_id(PaperIDs.LABEL.ARXIV, paper_json["externalIds"]["ArXiv"])
-
-    if "ACL" in paper_json["externalIds"]:
-        paper.set_external_id(PaperIDs.LABEL.ACL, paper_json["externalIds"]["ACL"])
-
     paper.set_title(paper_json["title"])
+
+    if "externalIds" in paper_json:
+        add_external_ids(paper, paper_json["externalIds"])
 
     if "authors" in paper_json:
         for author in paper_json["authors"]:
@@ -57,6 +75,10 @@ def create_paper_from_json(paper_json) -> Paper:
 
     if "year" in paper_json and paper_json["year"] is not None:
         paper.set_year(paper_json["year"])
+
+    if "references" in paper_json and len(paper_json["references"]) > 0:
+        for ref in paper_json["references"]:
+            paper.add_reference(ref['paperId'])
 
     return paper
 
