@@ -8,7 +8,7 @@ readme_content = (curr_dir_path/"README.md").read_text()
 
 setup(
     name="sciencer",
-    version="0.1.0",
+    version="0.1.1",
     description="A smarter way to find new articles",
     long_description=readme_content,
     long_description_content_type="text/markdown",
