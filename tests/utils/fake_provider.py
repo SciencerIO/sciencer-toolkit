@@ -1,7 +1,7 @@
 from typing import List, Optional
 from sciencer.policies import Policy
 from sciencer.providers.provider import Provider
-from sciencer.models import Paper
+from sciencer.models import Paper, PaperIDs
 
 
 class FakeProvider(Provider):
@@ -14,9 +14,23 @@ class FakeProvider(Provider):
         return list(filter(lambda x: id in x.authors, self.__papers))
 
     def get_paper_by_id(self, id) -> Optional[Paper]:
-        resulting_papers = list(filter(lambda x: x.doi == id, self.__papers))
+        resulting_papers = list(filter(lambda x: x.get_external_id(PaperIDs.LABEL.DOI) == id, self.__papers))
 
         if len(resulting_papers) == 0:
             return None
 
         return resulting_papers[0]
+
+    def get_paper_by_terms(self, terms: List[str], max_papers: int) -> List[Paper]:
+
+        resulting_papers = []
+        for paper in self.__papers:
+            if paper.abstract is None:
+                continue
+            elif all(term in paper.abstract for term in terms):
+                resulting_papers.append(paper)
+                
+        if len(resulting_papers) > max_papers:
+            return resulting_papers[max_papers:]
+
+        return resulting_papers

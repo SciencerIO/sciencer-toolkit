@@ -1,6 +1,6 @@
 from enum import auto
 from unittest import TestCase
-from sciencer.models import Paper
+from sciencer.models import Paper, PaperIDs
 from sciencer.collectors import CollectByDOI
 from tests.utils import FakeProvider
 
@@ -9,10 +9,10 @@ paper_2_doi = "Paper/2/"
 invalid_doi = "Invalid/DOI"
 
 paper_1 = Paper("id_1")
-paper_1.set_doi(paper_1_doi)
+paper_1.set_external_id(PaperIDs.LABEL.DOI,paper_1_doi)
 
 paper_2 = Paper("id_2")
-paper_2.set_doi(paper_2_doi)
+paper_2.set_external_id(PaperIDs.LABEL.DOI,paper_2_doi)
 
 
 class TestCollectorByAuthor(TestCase):
