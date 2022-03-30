@@ -3,10 +3,11 @@ from sciencer.expanders import ExpandByReferences
 from sciencer import Paper
 from tests.utils import FakeProvider
 
-paper_1 = Paper("id_1")
+paper_1_id = "id_1"
+paper_1 = Paper(paper_1_id)
 paper_2 = Paper("id_2")
 source_paper = Paper("id_s")
-source_paper.add_reference(paper_1.paper_id)
+source_paper.add_reference(paper_1_id)
 
 
 class TestExpanderByReferences(unittest.TestCase):
