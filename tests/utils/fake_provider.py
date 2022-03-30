@@ -14,7 +14,8 @@ class FakeProvider(Provider):
         return list(filter(lambda x: id in x.authors, self.__papers))
 
     def get_paper_by_id(self, id) -> Optional[Paper]:
-        resulting_papers = list(filter(lambda x: x.get_external_id(PaperIDs.LABEL.DOI) == id, self.__papers))
+        resulting_papers = list(filter(lambda x: x.get_external_id(
+            PaperIDs.LABEL.DOI) == id or x.paper_id == id, self.__papers))
 
         if len(resulting_papers) == 0:
             return None
@@ -29,7 +30,7 @@ class FakeProvider(Provider):
                 continue
             elif all(term in paper.abstract for term in terms):
                 resulting_papers.append(paper)
-                
+
         if len(resulting_papers) > max_papers:
             return resulting_papers[max_papers:]
 
