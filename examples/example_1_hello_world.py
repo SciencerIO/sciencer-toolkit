@@ -43,6 +43,7 @@ if __name__ == "__main__":
 
     # Expanders
     exp_author = sciencer.expanders.ExpandByAuthors()
+    exp_references = sciencer.expanders.ExpandByReferences()
 
     # Filters
     # After 2010
@@ -57,6 +58,7 @@ if __name__ == "__main__":
     s.add_collector(col_doi)
     s.add_collector(col_author_id)
     s.add_expander(exp_author)
+    s.add_expander(exp_references)
     s.add_filter(filter_year)
     s.add_filter(filter_social_in_abstract)
 
@@ -67,7 +69,8 @@ if __name__ == "__main__":
     # Iterate once
     start_time = datetime.now()
     print("1. Starting first iteration...")
-    first_batch = s.iterate(remove_source_from_results=True, callbacks=callbacks)
+    first_batch = s.iterate(
+        remove_source_from_results=True, callbacks=callbacks)
     print(
         f" 📜 First iteration collected {len(first_batch)} papers in {(datetime.now() - start_time).total_seconds()} seconds"
     )
