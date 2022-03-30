@@ -8,7 +8,10 @@ if __name__ == "__main__":
     s2_provider = sciencer.providers.SemanticScholarProvider()
 
     # Collect
-    col_information_theory = sciencer.collectors.CollectByTerms(terms=['information', 'theory'], max_papers=1)
+    col_information_theory = sciencer.collectors.CollectByTerms(
+        terms=['information', 'theory'],
+        max_papers=1
+        )
 
     # Expanders
     exp_author = sciencer.expanders.ExpandByAuthors()
