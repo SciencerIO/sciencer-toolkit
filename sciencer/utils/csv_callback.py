@@ -21,16 +21,20 @@ def convert_to_row(paper: Paper) -> Dict[str, str]:
     row['year'] = str(paper.year) if paper.year is not None else ""
     return row
 
+field_names = ['title', 'year', 'accepted']
+
 class WriteToCSVCallbacks(Callbacks):
     """Class that writes to a csv file
     """
     def __init__(self, file_path: str) -> None:
-        field_names = ['title', 'year', 'accepted']
-        self.__file = open(file_path, mode='w', newline='', encoding="utf-8")
-        self.__writer = csv.DictWriter(self.__file, fieldnames=field_names)
-        self.__writer.writeheader()
+        self.__path = file_path
+        with open(self.__path, mode='w', newline='', encoding="utf-8") as file:
+            self.__writer = csv.DictWriter(file, fieldnames=field_names)
+            self.__writer.writeheader()
 
     def on_paper_accepted(self, paper: Paper) -> None:
         row_paper = convert_to_row(paper)
         row_paper['accepted'] = 'true'
-        self.__writer.writerow(row_paper)
+        with open(self.__path, mode='a', newline='', encoding="utf-8") as file:
+            self.__writer = csv.DictWriter(file, fieldnames=field_names)
+            self.__writer.writerow(row_paper)
