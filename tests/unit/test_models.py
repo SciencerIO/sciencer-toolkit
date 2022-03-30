@@ -14,7 +14,7 @@ class TestPaperModel(unittest.TestCase):
 
         resulting__id = paper.paper_id
         self.assertEqual(resulting__id, correct_text_value)
-        
+
     def test_get_title_after_setting(self):
         paper = Paper("id_1")
         paper.set_title(correct_text_value)
@@ -30,7 +30,7 @@ class TestPaperModel(unittest.TestCase):
 
     def test_get_id_doi_after_setting(self):
         paper = Paper("id_1")
-        paper.set_external_id(PaperIDs.LABEL.DOI,correct_text_value)
+        paper.set_external_id(PaperIDs.LABEL.DOI, correct_text_value)
 
         resulting_id_doi = paper.get_external_id(PaperIDs.LABEL.DOI)
         self.assertEqual(resulting_id_doi, correct_text_value)
@@ -43,7 +43,7 @@ class TestPaperModel(unittest.TestCase):
 
     def test_get_id_mag_after_setting(self):
         paper = Paper("id_1")
-        paper.set_external_id(PaperIDs.LABEL.MAG,correct_text_value)
+        paper.set_external_id(PaperIDs.LABEL.MAG, correct_text_value)
 
         resulting_id_mag = paper.get_external_id(PaperIDs.LABEL.MAG)
         self.assertEqual(resulting_id_mag, correct_text_value)
@@ -56,7 +56,7 @@ class TestPaperModel(unittest.TestCase):
 
     def test_get_id_corpus_after_setting(self):
         paper = Paper("id_1")
-        paper.set_external_id(PaperIDs.LABEL.CORPUS,correct_text_value)
+        paper.set_external_id(PaperIDs.LABEL.CORPUS, correct_text_value)
 
         resulting_id_corpus = paper.get_external_id(PaperIDs.LABEL.CORPUS)
         self.assertEqual(resulting_id_corpus, correct_text_value)
@@ -69,7 +69,7 @@ class TestPaperModel(unittest.TestCase):
 
     def test_get_id_pubmed_after_setting(self):
         paper = Paper("id_1")
-        paper.set_external_id(PaperIDs.LABEL.PUBMED,correct_text_value)
+        paper.set_external_id(PaperIDs.LABEL.PUBMED, correct_text_value)
 
         resulting_id_pubmed = paper.get_external_id(PaperIDs.LABEL.PUBMED)
         self.assertEqual(resulting_id_pubmed, correct_text_value)
@@ -82,7 +82,7 @@ class TestPaperModel(unittest.TestCase):
 
     def test_get_id_dblp_after_setting(self):
         paper = Paper("id_1")
-        paper.set_external_id(PaperIDs.LABEL.DBLP,correct_text_value)
+        paper.set_external_id(PaperIDs.LABEL.DBLP, correct_text_value)
 
         resulting_id_dblp = paper.get_external_id(PaperIDs.LABEL.DBLP)
         self.assertEqual(resulting_id_dblp, correct_text_value)
@@ -95,7 +95,7 @@ class TestPaperModel(unittest.TestCase):
 
     def test_get_id_arxiv_after_setting(self):
         paper = Paper("id_1")
-        paper.set_external_id(PaperIDs.LABEL.ARXIV,correct_text_value)
+        paper.set_external_id(PaperIDs.LABEL.ARXIV, correct_text_value)
 
         resulting_id_arxiv = paper.get_external_id(PaperIDs.LABEL.ARXIV)
         self.assertEqual(resulting_id_arxiv, correct_text_value)
@@ -108,7 +108,7 @@ class TestPaperModel(unittest.TestCase):
 
     def test_get_id_acl_after_setting(self):
         paper = Paper("id_1")
-        paper.set_external_id(PaperIDs.LABEL.ACL,correct_text_value)
+        paper.set_external_id(PaperIDs.LABEL.ACL, correct_text_value)
 
         resulting_id_acl = paper.get_external_id(PaperIDs.LABEL.ACL)
         self.assertEqual(resulting_id_acl, correct_text_value)
@@ -172,7 +172,7 @@ class TestPaperModel(unittest.TestCase):
         self.assertIn(author_1_id, resulting_authors)
         self.assertIn(author_2_id, resulting_authors)
 
-    def test_get_authors_wuthout_adding(self):
+    def test_get_authors_without_adding(self):
         paper = Paper("id_1")
 
         resulting_authors = paper.authors
@@ -186,3 +186,54 @@ class TestPaperModel(unittest.TestCase):
         expects = f"<Paper: {correct_text_value}>"
 
         self.assertEqual(str(paper), expects)
+
+    def test_paper_equal_when_different_types(self):
+        paper = Paper("id_1")
+        other = object()
+
+        self.assertNotEqual(paper, other)
+
+    def test_paper_equal_when_same(self):
+        p1_id = "id_1"
+        paper_1 = Paper(p1_id)
+
+        self.assertEqual(paper_1, paper_1)
+
+    def test_paper_equal_when_equal(self):
+        p1_id = "id_1"
+        paper_1 = Paper(p1_id)
+        paper_2 = Paper(p1_id)
+
+        self.assertEqual(paper_1, paper_2)
+
+    def test_paper_equal_when_different(self):
+        p1_id = "id_1"
+        p2_id = "id_2"
+        paper_1 = Paper(p1_id)
+        paper_2 = Paper(p2_id)
+
+        self.assertNotEqual(paper_1, paper_2)
+
+    def test_paper_get_empty_references(self):
+        paper = Paper("id_1")
+
+        result = paper.references
+
+        self.assertEqual(len(result), 0)
+
+    def test_paper_get_references_after_adding_single_reference(self):
+        paper = Paper("id_1")
+        paper.add_reference(correct_text_value)
+        result = paper.references
+
+        self.assertEqual(len(result), 1)
+        self.assertIn(correct_text_value, result)
+
+    def test_paper_get_references_after_adding_duplicate_reference(self):
+        paper = Paper("id_1")
+        paper.add_reference(correct_text_value)
+        paper.add_reference(correct_text_value)
+        result = paper.references
+
+        self.assertEqual(len(result), 1)
+        self.assertIn(correct_text_value, result)

@@ -22,9 +22,3 @@ class TestExpanderByReferences(unittest.TestCase):
 
         self.assertEqual(len(expansion_result), 1)
         self.assertIn(paper_1, expansion_result)
-
-
-if __name__ == "__main__":
-    t = TestExpanderByReferences()
-    t.setUp()
-    t.test_expander_by_references()
