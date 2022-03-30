@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['pypy-2.7', 'pypy-3.7', 'pypy-3.8', 'pypy-3.9']
-    name: Python ${{ matrix.python-version }} sample
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+    name: Linting on Python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -37,8 +37,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '2.', '3.x', 'pypy-2.7', 'pypy-3.7', 'pypy-3.8', 'pypy-3.9' ]
-    name: Python ${{ matrix.python-version }} sample
+        python-version: [ '3.7', '3.8', '3.9', '3.10' ]
+    name: Testing on python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -57,5 +57,7 @@ jobs:
         run : |
           mypy --install-types --non-interactive tests
       - name: Test Code
+        env:
+          PYTHONPATH: ${{github.workspace}}
         run : |
           pytest tests
