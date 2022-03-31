@@ -71,6 +71,8 @@ sciencer.add_collector(sciencer.collectors.CollectByTerms(["Term 1", "Term 2", "
 sciencer.add_expander(sciencer.expanders.ExpandByAuthors())
 ## this expander will gather all the referenced papers
 sciencer.add_expander(sciencer.expanders.ExpandByReferences())
+## this expander will gather all the cited papers
+sciencer.add_expander(sciencer.expanders.ExpandByCitations())
 
 # Define filters
 ## this filter will reject papers that were published before 2010 and after 2030
@@ -103,6 +105,7 @@ For more examples on how to use the Sciencer toolkit, please check the directory
 | ---------- | :-------------------------------- |
 | Authors    | Expands a paper by its authors    |
 | References | Expands a paper by its references |
+| References | Expands a paper by its citations  |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -133,7 +136,7 @@ For more examples on how to use the Sciencer toolkit, please check the directory
 - [ ] Add Collectors
   - [ ] Add Collect by Venue/Proceedings
 - [ ] Add Expanders
-  - [ ] Add Expand by Citations
+  - [x] Add Expand by Citations
   - [x] Add Expand by References
   - [ ] Add Expand by Venue/Proceedings
 - [ ] Add Filters

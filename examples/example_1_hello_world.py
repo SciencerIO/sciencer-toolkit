@@ -11,6 +11,8 @@ from datetime import datetime
 import sciencer
 
 # Add callbacks
+
+
 class custom_callbacks(sciencer.Callbacks):
     def on_paper_collected(self, paper: sciencer.Paper) -> None:
         print(f"Paper {paper} collected!")
@@ -44,6 +46,7 @@ if __name__ == "__main__":
     # Expanders
     exp_author = sciencer.expanders.ExpandByAuthors()
     exp_references = sciencer.expanders.ExpandByReferences()
+    exp_citations = sciencer.expanders.ExpandByCitations()
 
     # Filters
     # After 2010
@@ -59,6 +62,7 @@ if __name__ == "__main__":
     s.add_collector(col_author_id)
     s.add_expander(exp_author)
     s.add_expander(exp_references)
+    s.add_expander(exp_citations)
     s.add_filter(filter_year)
     s.add_filter(filter_social_in_abstract)
 
