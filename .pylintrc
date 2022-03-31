@@ -1,5 +1,5 @@
 [SIMILARITIES]
-min-similarity-lines=3
+min-similarity-lines=8
 ignore-comments=yes
 ignore-docstrings=yes
 ignore-imports=yes
