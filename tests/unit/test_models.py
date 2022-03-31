@@ -237,3 +237,27 @@ class TestPaperModel(unittest.TestCase):
 
         self.assertEqual(len(result), 1)
         self.assertIn(correct_text_value, result)
+
+    def test_paper_get_empty_citations(self):
+        paper = Paper("id_1")
+
+        result = paper.citations
+
+        self.assertEqual(len(result), 0)
+
+    def test_paper_get_citations_after_adding_single_citation(self):
+        paper = Paper("id_1")
+        paper.add_citation(correct_text_value)
+        result = paper.citations
+
+        self.assertEqual(len(result), 1)
+        self.assertIn(correct_text_value, result)
+
+    def test_paper_get_citations_after_adding_duplicate_citation(self):
+        paper = Paper("id_1")
+        paper.add_citation(correct_text_value)
+        paper.add_citation(correct_text_value)
+        result = paper.citations
+
+        self.assertEqual(len(result), 1)
+        self.assertIn(correct_text_value, result)

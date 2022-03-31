@@ -62,6 +62,7 @@ class Paper:
         self.__year: Optional[int] = None
         self.__ids: PaperIDs = PaperIDs(paper_id=paper_id)
         self.__references_ids: Set[str] = set()
+        self.__citations_ids: Set[str] = set()
 
     def get_external_id(self, name: PaperIDs.LABEL) -> Optional[str]:
         """Getter for paper's external IDs
@@ -203,12 +204,29 @@ class Paper:
 
     @property
     def references(self) -> List[str]:
-        """Getter for paper's references'
+        """Getter for paper's references
 
         Returns:
             List[str]: the list of referenced papers' ids
         """
         return list(self.__references_ids)
+
+    def add_citation(self, citation_id: str) -> None:
+        """Add a new citation to this paper
+
+        Args:
+            citation_id (str): the cited paper id
+        """
+        self.__citations_ids.add(citation_id)
+
+    @property
+    def citations(self) -> List[str]:
+        """Getter for paper's citations
+
+        Returns:
+            List[str]: the list of cited papers' ids
+        """
+        return list(self.__citations_ids)
 
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, Paper):
