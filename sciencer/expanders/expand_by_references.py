@@ -1,9 +1,10 @@
 """Expands paper by its references
 """
-from typing import List
+from typing import Callable, List
+
+from ..models import Paper
 from ..providers.provider import Provider
 from .expander import Expander
-from ..models import Paper
 
 
 class ExpandByReferences(Expander):
@@ -16,7 +17,10 @@ class ExpandByReferences(Expander):
     def __init__(self) -> None:
         super().__init__([])
 
-    def execute(self, papers: List[Paper], providers: List[Provider]) -> List[Paper]:
+    def execute(self,
+                papers: List[Paper],
+                providers: List[Provider],
+                on_expanded_paper: Callable[[Paper, Paper], None] = None) -> List[Paper]:
         resulting_papers = set()
 
         referenced_papers_ids = set()

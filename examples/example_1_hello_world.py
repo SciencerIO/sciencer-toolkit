@@ -14,18 +14,16 @@ import sciencer
 
 
 class custom_callbacks(sciencer.Callbacks):
-    def on_paper_collected(self, paper: sciencer.Paper) -> None:
-        print(f"Paper {paper} collected!")
+    def on_paper_collected(self, paper: sciencer.Paper, collector: sciencer.collectors.Collector) -> None:
+        print(f"Paper {paper} collected by {collector} !")
 
-    def on_papers_expanded(
-        self, papers: List[sciencer.Paper], result: List[sciencer.Paper]
-    ) -> None:
-        print(f"A set with {len(papers)} papers were expanded to:")
-        if len(result) == 0:
-            print(" -/- Nothing")
-        else:
-            for resulting_paper in result:
-                print(f" --> {resulting_paper}")
+    def on_paper_expanded(self, new_paper: sciencer.Paper, expander: sciencer.expanders.Expander, source_paper: sciencer.Paper) -> None:
+        print(
+            f"Paper {new_paper} was expanded by {expander} from {source_paper}")
+
+    def on_paper_filtered(self, paper: sciencer.Paper, filter_executed: sciencer.filters.Filter, result: bool) -> None:
+        print(
+            f"Paper {paper} was filtered by {filter_executed} and got {result}")
 
     def on_paper_accepted(self, paper: sciencer.Paper) -> None:
         print(f"Paper {paper} accepted!")
@@ -74,7 +72,7 @@ if __name__ == "__main__":
     start_time = datetime.now()
     print("1. Starting first iteration...")
     first_batch = s.iterate(
-        remove_source_from_results=True, callbacks=callbacks)
+        remove_source_from_results=True, callbacks=[callbacks])
     print(
         f" 📜 First iteration collected {len(first_batch)} papers in {(datetime.now() - start_time).total_seconds()} seconds"
     )

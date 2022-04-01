@@ -1,6 +1,6 @@
 """ Sciencer Core
 """
-from typing import Dict, List
+from typing import Dict, List, Tuple
 from sciencer.collectors.collector import Collector
 from sciencer.expanders.expander import Expander
 from sciencer.filters.filter import Filter
@@ -9,22 +9,43 @@ from sciencer.models import Paper
 from .providers.provider import Provider
 
 
+def create_handle_on_expand_paper(expander=None, callbacks=None):
+    """Creates a new handle for expanding papers
+    """
+    def handle_expansion(exp_paper: Paper, src_paper: Paper):
+        for callback in callbacks:
+            callback.on_paper_expanded(
+                exp_paper, expander, src_paper)
+    return handle_expansion
+
+
 class Callbacks:
     """Sciencer callbacks wrapper"""
 
-    def on_paper_collected(self, paper: Paper) -> None:
+    def on_paper_collected(self, paper: Paper, collector: Collector) -> None:
         """Invoked when a new paper is collected.
 
         Args:
             paper (Paper): new paper collected.
+            collector (Collector): source of the collection
         """
 
-    def on_papers_expanded(self, papers: List[Paper], result: List[Paper]) -> None:
-        """Invoked when new papers were expanded.
+    def on_paper_expanded(self, new_paper: Paper, expander: Expander, source_paper: Paper) -> None:
+        """Invoked when a paper is fetched from an expansion.
 
         Args:
-            papers (List[Paper]): papers expanded.
-            result (List[Paper]): papers resulting from expansion.
+            new_paper (Paper): paper expanded.
+            expander (Expander): expander that fetched the paper.
+            source_paper (Paper): expanded paper.
+        """
+
+    def on_paper_filtered(self, paper: Paper, filter_executed: Filter, result: bool) -> None:
+        """Invoked when a paper has been filtered
+
+        Args:
+            paper (Paper): paper being tested
+            filter_executed (Filter): filters executed
+            result (bool): if filter is satisfied, return True. Otherwise, False
         """
 
     def on_paper_accepted(self, paper: Paper) -> None:
@@ -106,7 +127,7 @@ class Sciencer:
         self,
         source_papers=None,
         remove_source_from_results: bool = False,
-        callbacks: Callbacks = Callbacks(),
+        callbacks: List[Callbacks] = None,
     ) -> List[Paper]:
         """Iterates the a set of papers and generates a new collection of papers
         When no source_papers are given, uses registered collectors
@@ -118,6 +139,8 @@ class Sciencer:
         Returns:
             List[Paper]: the resulting collection of papers
         """
+        callbacks = [] if callbacks is None else callbacks
+
         if source_papers is None:
             source_papers = set()
 
@@ -126,38 +149,43 @@ class Sciencer:
                     collector.available_policies
                 ))
                 source_papers.update(collected_papers)
+
                 for collected_paper in collected_papers:
-                    callbacks.on_paper_collected(collected_paper)
+                    for callback in callbacks:
+                        callback.on_paper_collected(collected_paper, collector)
 
         # Expanders
 
         paper_after_expansion = set(source_papers)
 
         for expander in self.__expanders:
-            expansion_result = expander.execute(
-                papers=source_papers, providers=self.__get_provider(
-                    expander.available_policies)
-            )
-            paper_after_expansion.update(expansion_result)
-            callbacks.on_papers_expanded(source_papers, expansion_result)
+            paper_after_expansion.update(expander.execute(
+                papers=source_papers,
+                providers=self.__get_provider(expander.available_policies),
+                on_expanded_paper=create_handle_on_expand_paper(
+                    expander, callbacks)
+            ))
 
         # Filters
         papers_to_discard = set()
 
         for paper_to_filter in paper_after_expansion:
             for m_filter in self.__filters:
-                if not m_filter.is_valid(paper_to_filter):
+                result = m_filter.is_valid(paper_to_filter)
+
+                if not result:
                     papers_to_discard.add(paper_to_filter)
 
-        # Aggregate results
-        resulting_papers = set()
+                for callback in callbacks:
+                    callback.on_paper_filtered(
+                        paper_to_filter, m_filter, result)
+                    if result:
+                        callback.on_paper_accepted(paper_to_filter)
+                    else:
+                        callback.on_paper_rejected(paper_to_filter)
 
-        for paper in paper_after_expansion:
-            if paper not in papers_to_discard:
-                resulting_papers.add(paper)
-                callbacks.on_paper_accepted(paper)
-            else:
-                callbacks.on_paper_rejected(paper)
+        # Aggregate results
+        resulting_papers = paper_after_expansion.difference(papers_to_discard)
 
         if remove_source_from_results:
             resulting_papers.difference_update(source_papers)

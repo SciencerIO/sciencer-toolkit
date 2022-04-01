@@ -1,9 +1,10 @@
 """Expands paper by its citations
 """
-from typing import List
+from typing import Callable,  List
+
+from ..models import Paper
 from ..providers.provider import Provider
 from .expander import Expander
-from ..models import Paper
 
 
 class ExpandByCitations(Expander):
@@ -13,7 +14,10 @@ class ExpandByCitations(Expander):
     def __init__(self) -> None:
         super().__init__([])
 
-    def execute(self, papers: List[Paper], providers: List[Provider]) -> List[Paper]:
+    def execute(self,
+                papers: List[Paper],
+                providers: List[Provider],
+                on_expanded_paper: Callable[[Paper, Paper], None] = None) -> List[Paper]:
         resulting_papers = set()
 
         cited_papers_ids = set()

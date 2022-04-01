@@ -1,10 +1,12 @@
 """Expands papers by their authors
 """
-from typing import List
+from typing import Callable,  List
+
 from sciencer.policies import Policy
-from .expander import Expander
-from ..providers.provider import Provider
+
 from ..models import Paper
+from ..providers.provider import Provider
+from .expander import Expander
 
 
 class ExpandByAuthors(Expander):
@@ -13,7 +15,10 @@ class ExpandByAuthors(Expander):
     def __init__(self) -> None:
         super().__init__(policies=[Policy.BY_AUTHOR])
 
-    def execute(self, papers: List[Paper], providers: List[Provider]) -> List[Paper]:
+    def execute(self,
+                papers: List[Paper],
+                providers: List[Provider],
+                on_expanded_paper: Callable[[Paper, Paper], None] = None) -> List[Paper]:
 
         resulting_papers = []
 
