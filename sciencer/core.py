@@ -1,6 +1,6 @@
 """ Sciencer Core
 """
-from typing import Dict, List, Tuple
+from typing import Dict, List, Set
 from sciencer.collectors.collector import Collector
 from sciencer.expanders.expander import Expander
 from sciencer.filters.filter import Filter
@@ -123,6 +123,31 @@ class Sciencer:
             for provider in self.__providers_by_policy[policy]
         ]
 
+    def __filter_papers(self, papers_to_filter: Set[Paper], callbacks: List[Callbacks]):
+        accepted_papers = set()
+
+        for paper in papers_to_filter:
+            result = True
+            for m_filter in self.__filters:
+                f_result = m_filter.is_valid(paper)
+
+                if not f_result:
+                    result = False
+
+                for callback in callbacks:
+                    callback.on_paper_filtered(
+                        paper, m_filter, result)
+            if result is True:
+                accepted_papers.add(paper)
+
+            for callback in callbacks:
+                if paper in accepted_papers:
+                    callback.on_paper_accepted(paper)
+                else:
+                    callback.on_paper_rejected(paper)
+
+        return accepted_papers
+
     def iterate(
         self,
         source_papers=None,
@@ -167,25 +192,8 @@ class Sciencer:
             ))
 
         # Filters
-        papers_to_discard = set()
-
-        for paper_to_filter in paper_after_expansion:
-            for m_filter in self.__filters:
-                result = m_filter.is_valid(paper_to_filter)
-
-                if not result:
-                    papers_to_discard.add(paper_to_filter)
-
-                for callback in callbacks:
-                    callback.on_paper_filtered(
-                        paper_to_filter, m_filter, result)
-                    if result:
-                        callback.on_paper_accepted(paper_to_filter)
-                    else:
-                        callback.on_paper_rejected(paper_to_filter)
-
-        # Aggregate results
-        resulting_papers = paper_after_expansion.difference(papers_to_discard)
+        resulting_papers = self.__filter_papers(
+            paper_after_expansion, callbacks)
 
         if remove_source_from_results:
             resulting_papers.difference_update(source_papers)
