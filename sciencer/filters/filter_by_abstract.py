@@ -15,3 +15,6 @@ class FilterByAbstract(Filter):
         if paper.abstract is None:
             return False
         return self.__word in paper.abstract
+
+    def __str__(self) -> str:
+        return f"<FilterByAbstract [word: {self.__word}]>"

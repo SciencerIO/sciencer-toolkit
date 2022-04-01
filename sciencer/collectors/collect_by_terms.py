@@ -31,3 +31,6 @@ class CollectByTerms(Collector):
                 break
 
         return papers
+
+    def __str__(self) -> str:
+        return f"<CollectorByTerms [terms: { ''.join([str(term) + ', ' for term in self.__terms])}]>"

@@ -20,3 +20,7 @@ class Collector(HasPolicy, ABC):
         Returns:
             List[Paper]: papers collected.
         """
+
+    @abstractmethod
+    def __str__(self) -> str:
+        return super().__str__()

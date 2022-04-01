@@ -23,3 +23,6 @@ class FilterByYear(Filter):
             return False
 
         return self.__min <= paper.year <= self.__max
+
+    def __str__(self) -> str:
+        return f"<FilterByYear [min: {self.__min}, max: {self.__max}]>"

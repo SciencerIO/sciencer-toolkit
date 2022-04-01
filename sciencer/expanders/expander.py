@@ -21,3 +21,7 @@ class Expander(HasPolicy, ABC):
         Returns:
             List[Paper]: resulting papers from expansion.
         """
+
+    @abstractmethod
+    def __str__(self) -> str:
+        return super().__str__()

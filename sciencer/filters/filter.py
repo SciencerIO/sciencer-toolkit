@@ -19,3 +19,7 @@ class Filter(HasPolicy, ABC):
         Returns:
             bool: Returns True when the paper satisfies the criteria. Otherwise, returns false.
         """
+
+    @abstractmethod
+    def __str__(self) -> str:
+        return super().__str__()
