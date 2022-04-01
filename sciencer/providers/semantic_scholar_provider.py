@@ -9,8 +9,12 @@ from ..models import Paper, PaperIDs
 
 
 S2_FIELDS = ["title", "externalIds", "authors",
-             "abstract", "year", "references.paperId", "citations.paperId"]
+             "abstract", "year"]
+S2_NESTED_FIELDS = [
+    "references.paperId", "citations.paperId"]
 S2_URL_SINGLE_FIELDS = "".join([f"{field}," for field in S2_FIELDS])[:-1]
+S2_URL_GROUP_FIELDS = "".join(
+    [f"{field}," for field in S2_FIELDS + S2_NESTED_FIELDS])[:-1]
 
 
 def add_external_ids(paper, external_ids_json) -> None:
@@ -99,7 +103,7 @@ class SemanticScholarProvider(Provider):
     def get_paper_by_id(self, paper_id) -> Optional[Paper]:
         url = (
             f"https://api.semanticscholar.org/graph/v1/paper/{paper_id}?"
-            + f"fields={S2_URL_SINGLE_FIELDS}"
+            + f"fields={S2_URL_GROUP_FIELDS}"
         )
         response = requests.get(url, headers={"x-api-key": self.__api_key})
 
@@ -123,7 +127,7 @@ class SemanticScholarProvider(Provider):
 
             url = (
                 f"https://api.semanticscholar.org/graph/v1/author/{author_id}/papers?"
-                + f"fields={S2_URL_SINGLE_FIELDS}"
+                + f"fields={S2_URL_GROUP_FIELDS}"
                 + f"&offset={offset_id}"
             )
 
@@ -157,13 +161,13 @@ class SemanticScholarProvider(Provider):
         resulting_papers = set()
         offset_id = 0
         term_query = ''.join([f"{term}+"for term in terms])[:-1]
+        remaining_papers = max_papers
 
         while True:
             url = (
                 f"https://api.semanticscholar.org/graph/v1/paper/search?query={term_query}"
                 + f"&offset={offset_id}"
-                + "&limit=100"
-                + f"&fields={S2_URL_SINGLE_FIELDS}"
+                + f"&limit={min(100,remaining_papers)}"
             )
 
             response = requests.get(url, headers={"x-api-key": self.__api_key})
@@ -185,10 +189,12 @@ class SemanticScholarProvider(Provider):
             resulting_papers.update([create_paper_from_json(
                 paper_json) for paper_json in response_json["data"]])
 
+            remaining_papers -= len(response_json["data"])
+
             if "next" not in response_json:
                 break
 
-            if len(resulting_papers) > max_papers:
+            if len(resulting_papers) >= max_papers:
                 break
 
             offset_id = response_json["next"]

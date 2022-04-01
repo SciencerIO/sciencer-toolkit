@@ -2,7 +2,7 @@
 """
 from __future__ import annotations
 from enum import Enum
-from typing import List, Optional, Dict, Set
+from typing import List, Optional, Dict, Set, Any
 
 
 class PaperIDs:
@@ -19,13 +19,12 @@ class PaperIDs:
         ARXIV = "ArXiv"
         ACL = "ACL"
 
-    def __init__(self, paper_id: str) -> None:
+    def __init__(self) -> None:
         """Creates a model to store Paper IDs
 
         Args:
             paper_id (str): the main ID of the paper
         """
-        self.paper_id: Optional[str] = paper_id
         self.__ids: Dict[PaperIDs.LABEL, str] = {}
 
     def add_id(self, name: PaperIDs.LABEL, value: str) -> None:
@@ -57,10 +56,9 @@ class Paper:
 
     def __init__(self, paper_id: str) -> None:
         self.__authors_id: List[str] = []
-        self.__title: Optional[str] = None
-        self.__abstract: Optional[str] = None
-        self.__year: Optional[int] = None
-        self.__ids: PaperIDs = PaperIDs(paper_id=paper_id)
+        self.__details: Dict[str, Any] = {}
+        self.__id: str = paper_id
+        self.__external_ids: PaperIDs = PaperIDs()
         self.__references_ids: Set[str] = set()
         self.__citations_ids: Set[str] = set()
 
@@ -70,7 +68,7 @@ class Paper:
         Returns:
             PaperIDs.LABEL: the paper's id. If it does not exist, returns None
         """
-        return self.__ids.get_id(name)
+        return self.__external_ids.get_id(name)
 
     def set_external_id(self, name: PaperIDs.LABEL, value: str) -> Paper:
         """Setter for paper's external ID
@@ -82,17 +80,17 @@ class Paper:
         Returns:
             Paper: the modified paper
         """
-        self.__ids.add_id(name, value)
+        self.__external_ids.add_id(name, value)
         return self
 
     @property
-    def paper_id(self) -> Optional[str]:
+    def paper_id(self) -> str:
         """Getter for paper's s2
 
         Returns:
             str: the paper's s2 id
         """
-        return self.__ids.paper_id
+        return self.__id
 
     @property
     def title(self) -> Optional[str]:
@@ -101,7 +99,9 @@ class Paper:
         Returns:
             str: the paper's title
         """
-        return self.__title
+        if 'title' in self.__details:
+            return self.__details['title']
+        return None
 
     def set_title(self, title: str) -> Paper:
         """Setter for paper's title
@@ -112,7 +112,7 @@ class Paper:
         Returns:
             Paper: the modified paper
         """
-        self.__title = title
+        self.__details['title'] = title
         return self
 
     @property
@@ -159,7 +159,9 @@ class Paper:
         Returns:
             int: the paper's year
         """
-        return self.__year
+        if 'year' in self.__details:
+            return self.__details['year']
+        return None
 
     def set_year(self, year: int) -> Paper:
         """Setter for paper's year
@@ -170,7 +172,7 @@ class Paper:
         Returns:
             Paper: the modified paper
         """
-        self.__year = year
+        self.__details['year'] = year
         return self
 
     @property
@@ -180,7 +182,9 @@ class Paper:
         Returns:
             str: the paper's abstract
         """
-        return self.__abstract
+        if 'abstract' in self.__details:
+            return self.__details['abstract']
+        return None
 
     def set_abstract(self, abstract: str) -> Paper:
         """Setter for paper's abstract
@@ -191,7 +195,7 @@ class Paper:
         Returns:
             Paper: the modified paper
         """
-        self.__abstract = abstract
+        self.__details['abstract'] = abstract
         return self
 
     def add_reference(self, reference_id: str) -> None:
