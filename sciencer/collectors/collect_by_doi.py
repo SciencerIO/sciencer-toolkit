@@ -25,3 +25,6 @@ class CollectByDOI(Collector):
                 break
 
         return papers
+
+    def __str__(self) -> str:
+        return f"<CollectorByDOI [doi: {self.__doi}]>"

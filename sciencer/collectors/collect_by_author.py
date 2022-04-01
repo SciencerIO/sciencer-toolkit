@@ -24,3 +24,6 @@ class CollectByAuthorID(Collector):
                 break
 
         return papers
+
+    def __str__(self) -> str:
+        return f"<CollectorByAuthorID [author id: {self.__author_id}]>"

@@ -35,3 +35,6 @@ class ExpandByReferences(Expander):
                     break
 
         return list(resulting_papers)
+
+    def __str__(self) -> str:
+        return "<ExpanmderByReferences>"
