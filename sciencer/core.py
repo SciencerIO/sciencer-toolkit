@@ -1,6 +1,6 @@
 """ Sciencer Core
 """
-from typing import Dict, List, Set
+from typing import Dict, List, Set, Tuple
 from sciencer.collectors.collector import Collector
 from sciencer.expanders.expander import Expander
 from sciencer.filters.filter import Filter
