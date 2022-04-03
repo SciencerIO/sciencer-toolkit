@@ -144,7 +144,7 @@ For more examples on how to use the Sciencer toolkit, please check the directory
   - [ ] Add Filter by Topic
   - [ ] Add Filter by Keywords
 - [ ] Add Compound Filters
-- [ ] Add utility to write results to a *.csv
+- [x] Add utility to write results to a *.csv
 
 See the [open issues](https://github.com/SciencerIO/sciencer-toolkit/issues) for a full list of proposed features (and known issues).
 
