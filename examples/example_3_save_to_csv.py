@@ -8,25 +8,17 @@ if __name__ == "__main__":
     s2_provider = sciencer.providers.SemanticScholarProvider()
 
     # Collect
-    col_information_theory = sciencer.collectors.CollectByTerms(
-        terms=['information', 'theory'],
-        max_papers=1
-        )
-
-    # Expanders
-    exp_author = sciencer.expanders.ExpandByAuthors()
+    col_author = sciencer.collectors.CollectByAuthorID("2262347")
 
     # Filters
-    filter_year = sciencer.filters.FilterByYear(min_year=2018, max_year=2020)
+    filter_year = sciencer.filters.FilterByYear(min_year=1920, max_year=1940)
 
     # Setup sciencer
     s = sciencer.Sciencer()
     s.add_provider(s2_provider)
-    s.add_collector(col_information_theory)
-    s.add_expander(exp_author)
+    s.add_collector(col_author)
     s.add_filter(filter_year)
 
     # Setup
     csv_callback = sciencer.utils.WriteToCSVCallbacks("data.csv")
-    first_batch = s.iterate(remove_source_from_results=True, callbacks=csv_callback)
-    second_batch = s.iterate(source_papers=first_batch, callbacks=csv_callback)
+    first_batch = s.iterate(callbacks=csv_callback)
