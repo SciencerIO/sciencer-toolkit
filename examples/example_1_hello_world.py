@@ -11,6 +11,8 @@ from datetime import datetime
 import sciencer
 
 # Add callbacks
+
+
 class custom_callbacks(sciencer.Callbacks):
     def on_paper_collected(self, paper: sciencer.Paper) -> None:
         print(f"Paper {paper} collected!")
@@ -40,9 +42,13 @@ if __name__ == "__main__":
     # Collect
     col_doi = sciencer.collectors.CollectByDOI("10.1093/mind/LIX.236.433")
     col_author_id = sciencer.collectors.CollectByAuthorID("2262347")
+    col_terms = sciencer.collectors.CollectByTerms(
+        terms=['social', 'intelligence', 'machines', 'cognition', 'emotional', 'human'], max_papers=125)
 
     # Expanders
     exp_author = sciencer.expanders.ExpandByAuthors()
+    exp_references = sciencer.expanders.ExpandByReferences()
+    exp_citations = sciencer.expanders.ExpandByCitations()
 
     # Filters
     # After 2010
@@ -56,7 +62,10 @@ if __name__ == "__main__":
     s.add_provider(s2_provider)
     s.add_collector(col_doi)
     s.add_collector(col_author_id)
+    s.add_collector(col_terms)
     s.add_expander(exp_author)
+    s.add_expander(exp_references)
+    s.add_expander(exp_citations)
     s.add_filter(filter_year)
     s.add_filter(filter_social_in_abstract)
 
@@ -67,7 +76,8 @@ if __name__ == "__main__":
     # Iterate once
     start_time = datetime.now()
     print("1. Starting first iteration...")
-    first_batch = s.iterate(remove_source_from_results=True, callbacks=callbacks)
+    first_batch = s.iterate(
+        remove_source_from_results=True, callbacks=callbacks)
     print(
         f" 📜 First iteration collected {len(first_batch)} papers in {(datetime.now() - start_time).total_seconds()} seconds"
     )

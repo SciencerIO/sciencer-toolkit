@@ -30,3 +30,6 @@ class ExpandByAuthors(Expander):
                     break
 
         return resulting_papers
+
+    def __str__(self) -> str:
+        return "<ExpandByAuthors>"
