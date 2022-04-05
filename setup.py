@@ -25,7 +25,8 @@ setup(
         "Topic :: Scientific/Engineering",
         "Topic :: Utilities"
     ],
-    packages=["sciencer", "sciencer.collectors", "sciencer.expanders", "sciencer.providers", "sciencer.filters"],
+    packages=["sciencer", "sciencer.collectors", "sciencer.expanders",
+              "sciencer.providers", "sciencer.filters", "sciencer.utils"],
     include_package_data=True,
     install_requires=["requests"],
 )
