@@ -1,7 +1,7 @@
 """Sciencer Toolkit.
 See https://github.com/SciencerIO/sciencer-toolkit/ for more information.
 """
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 from . import providers
 from . import collectors
