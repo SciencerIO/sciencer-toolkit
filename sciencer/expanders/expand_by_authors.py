@@ -1,10 +1,12 @@
 """Expands papers by their authors
 """
-from typing import List
+from typing import Callable,  List, Dict, Set
+
 from sciencer.policies import Policy
-from .expander import Expander
-from ..providers.provider import Provider
+
 from ..models import Paper
+from ..providers.provider import Provider
+from .expander import Expander
 
 
 class ExpandByAuthors(Expander):
@@ -13,23 +15,37 @@ class ExpandByAuthors(Expander):
     def __init__(self) -> None:
         super().__init__(policies=[Policy.BY_AUTHOR])
 
-    def execute(self, papers: List[Paper], providers: List[Provider]) -> List[Paper]:
+    def execute(self,
+                papers: List[Paper],
+                providers: List[Provider],
+                on_expanded_paper: Callable[[Paper, Paper], None] = None) -> List[Paper]:
 
-        resulting_papers = []
+        resulting_papers: Set[Paper] = set()
 
-        authors_id = set()
+        papers_by_authors: Dict[str, Set[Paper]] = {}
 
         for paper in papers:
-            authors_id.update(paper.authors)
+            for author_id in paper.authors:
+                if author_id not in papers_by_authors:
+                    papers_by_authors[author_id] = set()
+                papers_by_authors[author_id].add(paper)
 
-        for author_id in authors_id:
+        for author_id, author_papers in papers_by_authors.items():
             for provider in providers:
-                author_papers = provider.get_papers_by_author(author_id)
-                if len(author_papers) > 0:
-                    resulting_papers.extend(author_papers)
-                    break
+                retrieved_author_papers = provider.get_papers_by_author(
+                    author_id)
 
-        return resulting_papers
+                if len(retrieved_author_papers) == 0:
+                    continue
+
+                resulting_papers.update(retrieved_author_papers)
+
+                if on_expanded_paper is not None:
+                    for paper in retrieved_author_papers:
+                        for author_paper in author_papers:
+                            on_expanded_paper(paper, author_paper)
+
+        return list(resulting_papers)
 
     def __str__(self) -> str:
         return "<ExpandByAuthors>"
