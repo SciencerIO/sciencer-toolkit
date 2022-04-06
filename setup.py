@@ -8,7 +8,7 @@ readme_content = (curr_dir_path/"README.md").read_text()
 
 setup(
     name="sciencer",
-    version="0.1.1",
+    version="0.1.2",
     description="A smarter way to find new articles",
     long_description=readme_content,
     long_description_content_type="text/markdown",
@@ -25,7 +25,8 @@ setup(
         "Topic :: Scientific/Engineering",
         "Topic :: Utilities"
     ],
-    packages=["sciencer", "sciencer.collectors", "sciencer.expanders", "sciencer.providers", "sciencer.filters"],
+    packages=["sciencer", "sciencer.collectors", "sciencer.expanders",
+              "sciencer.providers", "sciencer.filters", "sciencer.utils"],
     include_package_data=True,
     install_requires=["requests"],
 )

@@ -1,6 +1,6 @@
 """ Sciencer Core
 """
-from typing import Dict, List
+from typing import Dict, List, Set, Tuple
 from sciencer.collectors.collector import Collector
 from sciencer.expanders.expander import Expander
 from sciencer.filters.filter import Filter
@@ -9,22 +9,43 @@ from sciencer.models import Paper
 from .providers.provider import Provider
 
 
+def create_handle_on_expand_paper(expander=None, callbacks=None):
+    """Creates a new handle for expanding papers
+    """
+    def handle_expansion(exp_paper: Paper, src_paper: Paper):
+        for callback in callbacks:
+            callback.on_paper_expanded(
+                exp_paper, expander, src_paper)
+    return handle_expansion
+
+
 class Callbacks:
     """Sciencer callbacks wrapper"""
 
-    def on_paper_collected(self, paper: Paper) -> None:
+    def on_paper_collected(self, paper: Paper, collector: Collector) -> None:
         """Invoked when a new paper is collected.
 
         Args:
             paper (Paper): new paper collected.
+            collector (Collector): source of the collection
         """
 
-    def on_papers_expanded(self, papers: List[Paper], result: List[Paper]) -> None:
-        """Invoked when new papers were expanded.
+    def on_paper_expanded(self, new_paper: Paper, expander: Expander, source_paper: Paper) -> None:
+        """Invoked when a paper is fetched from an expansion.
 
         Args:
-            papers (List[Paper]): papers expanded.
-            result (List[Paper]): papers resulting from expansion.
+            new_paper (Paper): paper expanded.
+            expander (Expander): expander that fetched the paper.
+            source_paper (Paper): expanded paper.
+        """
+
+    def on_paper_filtered(self, paper: Paper, filter_executed: Filter, result: bool) -> None:
+        """Invoked when a paper has been filtered
+
+        Args:
+            paper (Paper): paper being tested
+            filter_executed (Filter): filters executed
+            result (bool): if filter is satisfied, return True. Otherwise, False
         """
 
     def on_paper_accepted(self, paper: Paper) -> None:
@@ -40,6 +61,67 @@ class Callbacks:
         Args:
             paper (Paper): rejected paper.
         """
+
+
+class PaperLog:
+    """Log of the paper's lifecycle during a iteration
+    """
+
+    def __init__(self, paper: Paper) -> None:
+        self.paper: Paper = paper
+        self.__collected_from: List[Collector] = []
+        self.__expanded_from: List[Tuple[Paper, Expander]] = []
+        self.__filtered_by: List[Tuple[Filter, bool]] = []
+
+    def add_collector_source(self, collector: Collector) -> None:
+        """Adds a new collector to the log
+
+        Args:
+            collector (Collector): collector used to fetch the paper
+        """
+        self.__collected_from.append(collector)
+
+    def add_expander_source(self, expander: Expander, source_paper: Paper) -> None:
+        """Adds a new expander to the log
+
+        Args:
+            expander (Expander): expander that fetched this paper
+            source_paper (Paper): paper used during the expansion
+        """
+        self.__expanded_from.append((source_paper, expander))
+
+    def add_filter_tested(self, filter_tested: Filter, result: bool) -> None:
+        """Add a new filter to the log
+
+        Args:
+            filter_tested (Filter): filter that tested this paper
+            result (bool): if the filter was satisfied, it is True. Otherwise, it is False
+        """
+        self.__filtered_by.append((filter_tested, result))
+
+
+class LogCallbacks(Callbacks):
+    """Logs the history of all the papers
+    """
+
+    def __init__(self) -> None:
+        self.__paper_logs: Dict[Paper, PaperLog] = {}
+
+    def on_paper_collected(self, paper: Paper, collector: Collector) -> None:
+        if paper not in self.__paper_logs:
+            self.__paper_logs[paper] = PaperLog(paper)
+        self.__paper_logs[paper].add_collector_source(collector)
+
+    def on_paper_expanded(self, new_paper: Paper, expander: Expander, source_paper: Paper) -> None:
+        if new_paper not in self.__paper_logs:
+            self.__paper_logs[new_paper] = PaperLog(new_paper)
+        self.__paper_logs[new_paper].add_expander_source(
+            expander, source_paper)
+
+    def on_paper_filtered(self, paper: Paper, filter_executed: Filter, result: bool) -> None:
+        if paper not in self.__paper_logs:
+            self.__paper_logs[paper] = PaperLog(paper)
+        self.__paper_logs[paper].add_filter_tested(filter_executed, result)
 
 
 class Sciencer:
@@ -102,11 +184,36 @@ class Sciencer:
             for provider in self.__providers_by_policy[policy]
         ]
 
+    def __filter_papers(self, papers_to_filter: Set[Paper], callbacks: List[Callbacks]):
+        accepted_papers = set()
+
+        for paper in papers_to_filter:
+            result = True
+            for m_filter in self.__filters:
+                f_result = m_filter.is_valid(paper)
+
+                if not f_result:
+                    result = False
+
+                for callback in callbacks:
+                    callback.on_paper_filtered(
+                        paper, m_filter, result)
+            if result is True:
+                accepted_papers.add(paper)
+
+            for callback in callbacks:
+                if paper in accepted_papers:
+                    callback.on_paper_accepted(paper)
+                else:
+                    callback.on_paper_rejected(paper)
+
+        return accepted_papers
+
     def iterate(
         self,
         source_papers=None,
         remove_source_from_results: bool = False,
-        callbacks: Callbacks = Callbacks(),
+        callbacks: List[Callbacks] = None,
     ) -> List[Paper]:
         """Iterates the a set of papers and generates a new collection of papers
         When no source_papers are given, uses registered collectors
@@ -118,6 +225,9 @@ class Sciencer:
         Returns:
             List[Paper]: the resulting collection of papers
         """
+        callbacks = [] if callbacks is None else callbacks
+        callbacks.append(LogCallbacks())
+
         if source_papers is None:
             source_papers = set()
 
@@ -126,38 +236,26 @@ class Sciencer:
                     collector.available_policies
                 ))
                 source_papers.update(collected_papers)
+
                 for collected_paper in collected_papers:
-                    callbacks.on_paper_collected(collected_paper)
+                    for callback in callbacks:
+                        callback.on_paper_collected(collected_paper, collector)
 
         # Expanders
 
         paper_after_expansion = set(source_papers)
 
         for expander in self.__expanders:
-            expansion_result = expander.execute(
-                papers=source_papers, providers=self.__get_provider(
-                    expander.available_policies)
-            )
-            paper_after_expansion.update(expansion_result)
-            callbacks.on_papers_expanded(source_papers, expansion_result)
+            paper_after_expansion.update(expander.execute(
+                papers=source_papers,
+                providers=self.__get_provider(expander.available_policies),
+                on_expanded_paper=create_handle_on_expand_paper(
+                    expander, callbacks)
+            ))
 
         # Filters
-        papers_to_discard = set()
-
-        for paper_to_filter in paper_after_expansion:
-            for m_filter in self.__filters:
-                if not m_filter.is_valid(paper_to_filter):
-                    papers_to_discard.add(paper_to_filter)
-
-        # Aggregate results
-        resulting_papers = set()
-
-        for paper in paper_after_expansion:
-            if paper not in papers_to_discard:
-                resulting_papers.add(paper)
-                callbacks.on_paper_accepted(paper)
-            else:
-                callbacks.on_paper_rejected(paper)
+        resulting_papers = self.__filter_papers(
+            paper_after_expansion, callbacks)
 
         if remove_source_from_results:
             resulting_papers.difference_update(source_papers)

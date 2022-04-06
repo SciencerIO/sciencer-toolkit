@@ -11,19 +11,19 @@ from datetime import datetime
 import sciencer
 
 # Add callbacks
-class custom_callbacks(sciencer.Callbacks):
-    def on_paper_collected(self, paper: sciencer.Paper) -> None:
-        print(f"Paper {paper} collected!")
 
-    def on_papers_expanded(
-        self, papers: List[sciencer.Paper], result: List[sciencer.Paper]
-    ) -> None:
-        print(f"A set with {len(papers)} papers were expanded to:")
-        if len(result) == 0:
-            print(" -/- Nothing")
-        else:
-            for resulting_paper in result:
-                print(f" --> {resulting_paper}")
+
+class custom_callbacks(sciencer.Callbacks):
+    def on_paper_collected(self, paper: sciencer.Paper, collector: sciencer.collectors.Collector) -> None:
+        print(f"Paper {paper} collected by {collector} !")
+
+    def on_paper_expanded(self, new_paper: sciencer.Paper, expander: sciencer.expanders.Expander, source_paper: sciencer.Paper) -> None:
+        print(
+            f"Paper {new_paper} was expanded by {expander} from {source_paper}")
+
+    def on_paper_filtered(self, paper: sciencer.Paper, filter_executed: sciencer.filters.Filter, result: bool) -> None:
+        print(
+            f"Paper {paper} was filtered by {filter_executed} and got {result}")
 
     def on_paper_accepted(self, paper: sciencer.Paper) -> None:
         print(f"Paper {paper} accepted!")
@@ -40,9 +40,13 @@ if __name__ == "__main__":
     # Collect
     col_doi = sciencer.collectors.CollectByDOI("10.1093/mind/LIX.236.433")
     col_author_id = sciencer.collectors.CollectByAuthorID("2262347")
+    col_terms = sciencer.collectors.CollectByTerms(
+        terms=['social', 'intelligence', 'machines', 'cognition', 'emotional', 'human'], max_papers=125)
 
     # Expanders
     exp_author = sciencer.expanders.ExpandByAuthors()
+    exp_references = sciencer.expanders.ExpandByReferences()
+    exp_citations = sciencer.expanders.ExpandByCitations()
 
     # Filters
     # After 2010
@@ -56,7 +60,10 @@ if __name__ == "__main__":
     s.add_provider(s2_provider)
     s.add_collector(col_doi)
     s.add_collector(col_author_id)
+    s.add_collector(col_terms)
     s.add_expander(exp_author)
+    s.add_expander(exp_references)
+    s.add_expander(exp_citations)
     s.add_filter(filter_year)
     s.add_filter(filter_social_in_abstract)
 
@@ -67,7 +74,8 @@ if __name__ == "__main__":
     # Iterate once
     start_time = datetime.now()
     print("1. Starting first iteration...")
-    first_batch = s.iterate(remove_source_from_results=True, callbacks=callbacks)
+    first_batch = s.iterate(
+        remove_source_from_results=True, callbacks=[callbacks])
     print(
         f" 📜 First iteration collected {len(first_batch)} papers in {(datetime.now() - start_time).total_seconds()} seconds"
     )
