@@ -176,6 +176,9 @@ class SemanticScholarProvider(Provider):
         remaining_papers = max_papers
 
         while True:
+            if remaining_papers <= 0:
+                break
+
             url = (
                 f"https://api.semanticscholar.org/graph/v1/paper/search?query={term_query}"
                 + f"&offset={offset_id}"
@@ -210,9 +213,6 @@ class SemanticScholarProvider(Provider):
             remaining_papers -= len(response_json["data"])
 
             if "next" not in response_json:
-                break
-
-            if len(resulting_papers) >= max_papers:
                 break
 
             offset_id = response_json["next"]
