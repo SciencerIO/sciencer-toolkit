@@ -117,6 +117,12 @@ class SemanticScholarProvider(Provider):
 
             response = requests.get(url, headers={"x-api-key": self.__api_key})
 
+        if response.status_code != 200:
+            print(
+                f"🚫 Error {response.status_code} has occured: {response.text}"
+            )
+            return None
+
         return create_paper_from_json(response.json())
 
     def get_papers_by_author(self, author_id: str = "") -> List[Paper]:
@@ -144,6 +150,12 @@ class SemanticScholarProvider(Provider):
 
                 response = requests.get(
                     url, headers={"x-api-key": self.__api_key})
+
+            if response.status_code != 200:
+                print(
+                    f"🚫 Error {response.status_code} has occured: {response.text}"
+                )
+                break
 
             response_json = response.json()
 
@@ -183,6 +195,12 @@ class SemanticScholarProvider(Provider):
 
                 response = requests.get(
                     url, headers={"x-api-key": self.__api_key})
+            
+            if response.status_code != 200:
+                print(
+                    f"🚫 Error {response.status_code} has occured: {response.text}"
+                )
+                break
 
             response_json = response.json()
 
