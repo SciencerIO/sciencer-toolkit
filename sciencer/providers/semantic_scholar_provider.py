@@ -195,7 +195,7 @@ class SemanticScholarProvider(Provider):
 
                 response = requests.get(
                     url, headers={"x-api-key": self.__api_key})
-            
+
             if response.status_code != 200:
                 print(
                     f"🚫 Error {response.status_code} has occured: {response.text}"
