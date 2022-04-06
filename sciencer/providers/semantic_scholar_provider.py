@@ -210,7 +210,7 @@ class SemanticScholarProvider(Provider):
             resulting_papers.update([create_paper_from_json(
                 paper_json) for paper_json in response_json["data"]])
 
-            remaining_papers -= len(response_json["data"])
+            remaining_papers = max_papers - len(resulting_papers)
 
             if "next" not in response_json:
                 break
