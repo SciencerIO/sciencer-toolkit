@@ -129,14 +129,14 @@ class SemanticScholarProvider(Provider):
 
     def get_papers_by_author(self, author_id: str = "") -> List[Paper]:
         resulting_papers = set()
-        offset_id = 0
+        offset = 0
 
         while True:
 
             url = (
                 f"https://api.semanticscholar.org/graph/v1/author/{author_id}/papers?"
                 + f"fields={S2_URL_GROUP_FIELDS}"
-                + f"&offset={offset_id}"
+                + f"&offset={offset}"
             )
 
             response = requests.get(url, headers={"x-api-key": self.__api_key})
@@ -167,13 +167,13 @@ class SemanticScholarProvider(Provider):
             if "next" not in response_json:
                 break
 
-            offset_id = response_json["next"]
+            offset = response_json["next"]
 
         return list(resulting_papers)
 
     def get_paper_by_terms(self, terms: List[str], max_papers: int) -> List[Paper]:
         resulting_papers = set()
-        offset_id = 0
+        offset = 0
         term_query = ''.join([f"{term}+"for term in terms])[:-1]
         remaining_papers = max_papers
 
@@ -181,15 +181,15 @@ class SemanticScholarProvider(Provider):
             if remaining_papers <= 0:
                 break
 
-            if offset_id >= S2_MAXIMUM_PAPER_RESULTS_SEARCH:
+            if offset >= S2_MAXIMUM_PAPER_RESULTS_SEARCH:
                 break
 
             papers_to_retrieve = min(
-                100, remaining_papers, S2_MAXIMUM_PAPER_RESULTS_SEARCH-offset_id)
+                100, remaining_papers, S2_MAXIMUM_PAPER_RESULTS_SEARCH-offset)
 
             url = (
                 f"https://api.semanticscholar.org/graph/v1/paper/search?query={term_query}"
-                + f"&offset={offset_id}"
+                + f"&offset={offset}"
                 + f"&limit={papers_to_retrieve}"
             )
 
@@ -223,6 +223,6 @@ class SemanticScholarProvider(Provider):
             if "next" not in response_json:
                 break
 
-            offset_id = response_json["next"]
+            offset = response_json["next"]
 
         return list(resulting_papers)
