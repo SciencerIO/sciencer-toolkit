@@ -16,6 +16,8 @@ S2_URL_SINGLE_FIELDS = "".join([f"{field}," for field in S2_FIELDS])[:-1]
 S2_URL_GROUP_FIELDS = "".join(
     [f"{field}," for field in S2_FIELDS + S2_NESTED_FIELDS])[:-1]
 
+S2_MAXIMUM_PAPER_RESULTS_SEARCH = 9999
+
 
 def add_external_ids(paper, external_ids_json) -> None:
     """Add external ids to a paper
@@ -173,7 +175,7 @@ class SemanticScholarProvider(Provider):
         resulting_papers = set()
         offset_id = 0
         term_query = ''.join([f"{term}+"for term in terms])[:-1]
-        remaining_papers = max_papers
+        remaining_papers = max(max_papers, S2_MAXIMUM_PAPER_RESULTS_SEARCH)
 
         while True:
             if remaining_papers <= 0:
