@@ -175,16 +175,22 @@ class SemanticScholarProvider(Provider):
         resulting_papers = set()
         offset_id = 0
         term_query = ''.join([f"{term}+"for term in terms])[:-1]
-        remaining_papers = max(max_papers, S2_MAXIMUM_PAPER_RESULTS_SEARCH)
+        remaining_papers = max_papers
 
         while True:
             if remaining_papers <= 0:
                 break
 
+            if offset_id >= S2_MAXIMUM_PAPER_RESULTS_SEARCH:
+                break
+
+            papers_to_retrieve = min(
+                100, remaining_papers, S2_MAXIMUM_PAPER_RESULTS_SEARCH-offset_id)
+
             url = (
                 f"https://api.semanticscholar.org/graph/v1/paper/search?query={term_query}"
                 + f"&offset={offset_id}"
-                + f"&limit={min(100,remaining_papers)}"
+                + f"&limit={papers_to_retrieve}"
             )
 
             response = requests.get(url, headers={"x-api-key": self.__api_key})
