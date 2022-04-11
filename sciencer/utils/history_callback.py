@@ -91,16 +91,17 @@ class HistoryCallbacks(Callbacks):
         """Dumps the history of all the papers registered in the callback
         """
         for paper, log in self.__paper_logs.items():
-            print(f"{paper.title}")
+            print(f"# {paper.title}")
             if len(log.collectors) > 0:
-                print("Collectors:")
+                print("## Collectors:")
                 for collector in log.collectors:
                     print(f" > {str(collector)}")
             if len(log.expanders) > 0:
-                print("Expanders:")
+                print("## Expanders:")
                 for expander in log.expanders:
                     print(f" > {str(expander[1])} + {str(expander[0])}")
             if len(log.filters) > 0:
-                print("Filters:")
+                print("## Filters:")
                 for m_filter in log.filters:
                     print(f" > {str(m_filter[0])} => {m_filter[1]}")
+            print()
