@@ -1,6 +1,6 @@
 """ Sciencer Core
 """
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Set
 from sciencer.collectors.collector import Collector
 from sciencer.expanders.expander import Expander
 from sciencer.filters.filter import Filter
@@ -61,67 +61,6 @@ class Callbacks:
         Args:
             paper (Paper): rejected paper.
         """
-
-
-class PaperLog:
-    """Log of the paper's lifecycle during a iteration
-    """
-
-    def __init__(self, paper: Paper) -> None:
-        self.paper: Paper = paper
-        self.__collected_from: List[Collector] = []
-        self.__expanded_from: List[Tuple[Paper, Expander]] = []
-        self.__filtered_by: List[Tuple[Filter, bool]] = []
-
-    def add_collector_source(self, collector: Collector) -> None:
-        """Adds a new collector to the log
-
-        Args:
-            collector (Collector): collector used to fetch the paper
-        """
-        self.__collected_from.append(collector)
-
-    def add_expander_source(self, expander: Expander, source_paper: Paper) -> None:
-        """Adds a new expander to the log
-
-        Args:
-            expander (Expander): expander that fetched this paper
-            source_paper (Paper): paper used during the expansion
-        """
-        self.__expanded_from.append((source_paper, expander))
-
-    def add_filter_tested(self, filter_tested: Filter, result: bool) -> None:
-        """Add a new filter to the log
-
-        Args:
-            filter_tested (Filter): filter that tested this paper
-            result (bool): if the filter was satisfied, it is True. Otherwise, it is False
-        """
-        self.__filtered_by.append((filter_tested, result))
-
-
-class LogCallbacks(Callbacks):
-    """Logs the history of all the papers
-    """
-
-    def __init__(self) -> None:
-        self.__paper_logs: Dict[Paper, PaperLog] = {}
-
-    def on_paper_collected(self, paper: Paper, collector: Collector) -> None:
-        if paper not in self.__paper_logs:
-            self.__paper_logs[paper] = PaperLog(paper)
-        self.__paper_logs[paper].add_collector_source(collector)
-
-    def on_paper_expanded(self, new_paper: Paper, expander: Expander, source_paper: Paper) -> None:
-        if new_paper not in self.__paper_logs:
-            self.__paper_logs[new_paper] = PaperLog(new_paper)
-        self.__paper_logs[new_paper].add_expander_source(
-            expander, source_paper)
-
-    def on_paper_filtered(self, paper: Paper, filter_executed: Filter, result: bool) -> None:
-        if paper not in self.__paper_logs:
-            self.__paper_logs[paper] = PaperLog(paper)
-        self.__paper_logs[paper].add_filter_tested(filter_executed, result)
 
 
 class Sciencer:
@@ -226,7 +165,6 @@ class Sciencer:
             List[Paper]: the resulting collection of papers
         """
         callbacks = [] if callbacks is None else callbacks
-        callbacks.append(LogCallbacks())
 
         if source_papers is None:
             source_papers = set()
