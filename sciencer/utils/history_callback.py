@@ -9,7 +9,7 @@ from sciencer.expanders import Expander
 from sciencer.filters import Filter
 
 
-class PaperLog:
+class HistoryLog:
     """Log of the paper's lifecycle during a iteration
     """
 
@@ -69,23 +69,31 @@ class HistoryCallbacks(Callbacks):
     """
 
     def __init__(self) -> None:
-        self.__paper_logs: Dict[Paper, PaperLog] = {}
+        self.__paper_logs: Dict[Paper, HistoryLog] = {}
 
     def on_paper_collected(self, paper: Paper, collector: Collector) -> None:
         if paper not in self.__paper_logs:
-            self.__paper_logs[paper] = PaperLog(paper)
+            self.__paper_logs[paper] = HistoryLog(paper)
         self.__paper_logs[paper].add_collector_source(collector)
 
     def on_paper_expanded(self, new_paper: Paper, expander: Expander, source_paper: Paper) -> None:
         if new_paper not in self.__paper_logs:
-            self.__paper_logs[new_paper] = PaperLog(new_paper)
+            self.__paper_logs[new_paper] = HistoryLog(new_paper)
         self.__paper_logs[new_paper].add_expander_source(
             expander, source_paper)
 
     def on_paper_filtered(self, paper: Paper, filter_executed: Filter, result: bool) -> None:
         if paper not in self.__paper_logs:
-            self.__paper_logs[paper] = PaperLog(paper)
+            self.__paper_logs[paper] = HistoryLog(paper)
         self.__paper_logs[paper].add_filter_tested(filter_executed, result)
+
+    @property
+    def papers_history(self) -> Dict[Paper, HistoryLog]:
+        """The history of all papers mentioned during the expansion
+        Returns:
+            Dict[Paper, HistoryLog]: A dictionary mapping each paper and respective log
+        """        """"""
+        return self.__paper_logs
 
     def dump(self) -> None:
         """Dumps the history of all the papers registered in the callback
