@@ -22,7 +22,6 @@ if __name__ == "__main__":
 
     history_cb = HistoryCallbacks()
 
-    for paper in s.iterate(remove_source_from_results=False, callbacks=[history_cb]):
-        print(f"{paper.year}@{paper.paper_id} - {paper.title} => {paper.authors}")
+    s.iterate(remove_source_from_results=False, callbacks=[history_cb])
 
     history_cb.dump()
