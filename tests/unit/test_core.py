@@ -9,8 +9,8 @@ author_1_id = "author_1_id"
 author_1_name = "author_1_name"
 
 paper_1 = Paper("id_1")
-paper_1.add_author(author_1_id)
-paper_1.set_external_id(PaperIDs.LABEL.DOI,paper_1_doi)
+paper_1.authors_ids.add(author_1_id)
+paper_1.external_ids.add_id(PaperIDs.LABEL.DOI, paper_1_doi)
 
 
 class TestSciencerIterations(TestCase):

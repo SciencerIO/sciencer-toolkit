@@ -6,7 +6,7 @@ from sciencer.models import Paper
 PAPER_YEAR = 2010
 
 paper_with_year = Paper("id_wy")
-paper_with_year.set_year(PAPER_YEAR)
+paper_with_year.year = PAPER_YEAR
 
 paper_without_year = Paper("id_woy")
 

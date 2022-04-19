@@ -11,10 +11,10 @@ class FakeProvider(Provider):
 
     def get_papers_by_author(self, id: str = "") -> List[Paper]:
 
-        return list(filter(lambda x: id in x.authors, self.__papers))
+        return list(filter(lambda x: id in x.authors_ids, self.__papers))
 
     def get_paper_by_id(self, id) -> Optional[Paper]:
-        resulting_papers = list(filter(lambda x: x.get_external_id(
+        resulting_papers = list(filter(lambda x: x.external_ids.get_id(
             PaperIDs.LABEL.DOI) == id or x.paper_id == id, self.__papers))
 
         if len(resulting_papers) == 0:

@@ -3,3 +3,5 @@ min-similarity-lines=8
 ignore-comments=yes
 ignore-docstrings=yes
 ignore-imports=yes
+[MESSAGES CONTROL]
+disable = locally-disabled
