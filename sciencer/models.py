@@ -58,10 +58,10 @@ class Paper:
     # pylint: disable=too-many-instance-attributes
 
     paper_id: str
-    external_ids: PaperIDs = field(default_factory=lambda: PaperIDs())
-    authors_ids: Set[str] = field(default_factory=lambda: set())
-    references_ids: Set[str] = field(default_factory=lambda: set())
-    citations_ids: Set[str] = field(default_factory=lambda: set())
+    external_ids: PaperIDs = field(default_factory=PaperIDs)
+    authors_ids: Set[str] = field(default_factory=set)
+    references_ids: Set[str] = field(default_factory=set)
+    citations_ids: Set[str] = field(default_factory=set)
     abstract: Optional[str] = field(default=None)
     title: Optional[str] = field(default=None)
     year: Optional[int] = field(default=None)
