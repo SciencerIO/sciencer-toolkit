@@ -1,0 +1,35 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Example 1 Hello World",
+            "type": "python",
+            "request": "launch",
+            "program": "./examples/example_1_hello_world.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {"PYTHONPATH": "${workspaceFolder}${pathSeparator}${env:PYTHONPATH}"}
+        },
+        {
+            "name": "Python: Example 2 Research Group Report",
+            "type": "python",
+            "request": "launch",
+            "program": "./examples/example_2_research_group_report.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {"PYTHONPATH": "${workspaceFolder}${pathSeparator}${env:PYTHONPATH}"}
+        },
+        {
+            "name": "Python: Example 3 Save to CSV",
+            "type": "python",
+            "request": "launch",
+            "program": "./examples/example_3_save_to_csv.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {"PYTHONPATH": "${workspaceFolder}${pathSeparator}${env:PYTHONPATH}"}
+        }
+    ]
+}
