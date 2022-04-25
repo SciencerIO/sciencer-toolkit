@@ -8,12 +8,14 @@ class FilterByFieldOfStudy(Filter):
     """Class that encapsulates the filter of paper by its fields of study"""
 
     def __init__(self, field_of_study: str, accept_when_empty=False) -> None:
-        """Create a filter by field of study
-           A paper is considered valid when a field of study is included in the paper's fields of study
+        """Create a filter by field of study.
+           A paper is considered valid when a field of study is included \
+           in the paper's fields of study.
 
         Args:
             field_of_study (str): the field of study that the paper must have
-            accept_when_empty (bool, optional): when True, the Filter accepts papers without the necessary properties to check validity. Defaults to False.
+            accept_when_empty (bool, optional): when True, the Filter accepts papers without \
+                the necessary properties to check validity. Defaults to False.
         """
         super().__init__(policies=[])
         self.__field_of_study: str = field_of_study

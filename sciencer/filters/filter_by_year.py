@@ -8,12 +8,13 @@ class FilterByYear(Filter):
     """Class that encapsulates the filter of a paper by its year"""
 
     def __init__(self, min_year: int, max_year: int, accept_when_empty=False) -> None:
-        """Create a filter by year
+        """Create a filter by year.
 
         Args:
             min_year (int): to be accepted, paper's year should be more or equal to this year
             max_year (int): to be accepted, paper's year should be less or equal to this year
-            accept_when_empty (bool, optional): when True, the Filter accepts papers without the necessary properties to check validity. Defaults to False.
+            accept_when_empty (bool, optional): when True, the Filter accepts papers without the \
+                necessary properties to check validity. Defaults to False.
         """
         super().__init__(policies=[])
         self.__min: int = min_year
