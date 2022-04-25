@@ -13,6 +13,7 @@ class FilterByYear(Filter):
         Args:
             min_year (int): to be accepted, paper's year should be more or equal to this year
             max_year (int): to be accepted, paper's year should be less or equal to this year
+            accept_when_empty (bool, optional): when True, the Filter accepts papers without the necessary properties to check validity. Defaults to False.
         """
         super().__init__(policies=[])
         self.__min: int = min_year
