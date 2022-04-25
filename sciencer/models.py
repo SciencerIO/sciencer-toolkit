@@ -62,7 +62,7 @@ class Paper:
         self.__references_ids: Set[str] = set()
         self.__citations_ids: Set[str] = set()
         self.__fields_of_study: Set[str] = set()
-          
+
     def get_external_id(self, name: PaperIDs.LABEL) -> Optional[str]:
         """Getter for paper's external IDs
 

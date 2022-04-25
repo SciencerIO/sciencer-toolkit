@@ -61,7 +61,8 @@ class Callbacks:
         Args:
             paper (Paper): rejected paper.
         """
-        
+
+
 class Sciencer:
     """Core component of Sciencer
     Responsible for generating a new collection of paper

@@ -18,42 +18,6 @@ S2_URL_GROUP_FIELDS = "".join(
 
 S2_MAXIMUM_PAPER_RESULTS_SEARCH = 9999
 
-def add_external_ids(paper, external_ids_json) -> None:
-    """Add external ids to a paper
-
-    Args:
-        paper (_type_): paper to receive the external ids
-        external_ids_json (_type_): the external ids to add
-    """
-    # External IDS
-    if "DOI" in external_ids_json:
-        paper.set_external_id(PaperIDs.LABEL.DOI,
-                              external_ids_json["DOI"])
-
-    if "MAG" in external_ids_json:
-        paper.set_external_id(PaperIDs.LABEL.MAG,
-                              external_ids_json["MAG"])
-
-    if "CorpusId" in external_ids_json:
-        paper.set_external_id(PaperIDs.LABEL.CORPUS,
-                              external_ids_json["CorpusId"])
-
-    if "PubMed" in external_ids_json:
-        paper.set_external_id(PaperIDs.LABEL.PUBMED,
-                              external_ids_json["PubMed"])
-
-    if "DBLP" in external_ids_json:
-        paper.set_external_id(PaperIDs.LABEL.DBLP,
-                              external_ids_json["DBLP"])
-
-    if "ArXiv" in external_ids_json:
-        paper.set_external_id(PaperIDs.LABEL.ARXIV,
-                              external_ids_json["ArXiv"])
-
-    if "ACL" in external_ids_json:
-        paper.set_external_id(PaperIDs.LABEL.ACL,
-                              external_ids_json["ACL"])
-
 
 def add_external_ids(paper, external_ids_json) -> None:
     """Add external ids to a paper
@@ -131,7 +95,7 @@ def create_paper_from_json(paper_json) -> Paper:
             and len(paper_json["fieldsOfStudy"]) > 0:
         for field in paper_json["fieldsOfStudy"]:
             paper.add_field_of_study(field)
-            
+
     return paper
 
 
