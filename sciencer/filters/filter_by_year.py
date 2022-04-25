@@ -7,7 +7,7 @@ from ..models import Paper
 class FilterByYear(Filter):
     """Class that encapsulates the filter of a paper by its year"""
 
-    def __init__(self, min_year: int, max_year: int) -> None:
+    def __init__(self, min_year: int, max_year: int, accept_when_empty=False) -> None:
         """Create a filter by year
 
         Args:
@@ -17,10 +17,11 @@ class FilterByYear(Filter):
         super().__init__(policies=[])
         self.__min: int = min_year
         self.__max: int = max_year
+        self.__accept_when_empty = accept_when_empty
 
     def is_valid(self, paper: Paper) -> bool:
         if paper.year is None:
-            return False
+            return self.__accept_when_empty
 
         return self.__min <= paper.year <= self.__max
 
