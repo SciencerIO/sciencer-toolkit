@@ -61,6 +61,7 @@ class Paper:
         self.__external_ids: PaperIDs = PaperIDs()
         self.__references_ids: Set[str] = set()
         self.__citations_ids: Set[str] = set()
+        self.__fields_of_study: Set[str] = set()
 
     def get_external_id(self, name: PaperIDs.LABEL) -> Optional[str]:
         """Getter for paper's external IDs
@@ -231,6 +232,23 @@ class Paper:
             List[str]: the list of cited papers' ids
         """
         return list(self.__citations_ids)
+
+    def add_field_of_study(self, field_of_study: str) -> None:
+        """Add a new field_of_study to this paper
+
+        Args:
+            field_of_study (str): the cited paper's field_of_study
+        """
+        self.__fields_of_study.add(field_of_study)
+
+    @property
+    def fields_of_study(self) -> List[str]:
+        """Getter for paper's fields of study
+
+        Returns:
+            List[str]: the list of cited papers' fields of study
+        """
+        return list(self.__fields_of_study)
 
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, Paper):

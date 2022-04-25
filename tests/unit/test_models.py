@@ -261,3 +261,27 @@ class TestPaperModel(unittest.TestCase):
 
         self.assertEqual(len(result), 1)
         self.assertIn(correct_text_value, result)
+
+    def test_paper_get_empty_fields_of_study(self):
+        paper = Paper("id_1")
+
+        result = paper.fields_of_study
+
+        self.assertEqual(len(result), 0)
+
+    def test_paper_get_fields_of_study_after_adding_single_field(self):
+        paper = Paper("id_1")
+        paper.add_field_of_study(correct_text_value)
+        result = paper.fields_of_study
+
+        self.assertEqual(len(result), 1)
+        self.assertIn(correct_text_value, result)
+
+    def test_paper_get_fields_of_study_after_adding_duplicate_fields(self):
+        paper = Paper("id_1")
+        paper.add_field_of_study(correct_text_value)
+        paper.add_field_of_study(correct_text_value)
+        result = paper.fields_of_study
+
+        self.assertEqual(len(result), 1)
+        self.assertIn(correct_text_value, result)

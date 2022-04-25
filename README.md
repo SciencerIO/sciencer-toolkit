@@ -77,8 +77,10 @@ sciencer.add_expander(sciencer.expanders.ExpandByCitations())
 # Define filters
 ## this filter will reject papers that were published before 2010 and after 2030
 sciencer.add_filter(sciencer.filters.FilterByYear(min_year=2010, max_year=2030))
-## this filter will reject all the appers that do not have the word social on the abstract
+## this filter will reject all the papers that do not have the word social on the abstract
 sciencer.add_filter(sciencer.filters.FilterByAbstract("social"))
+## this filter will reject all the papers that do not have the field of study Computer Science
+sciencer.add_filter(sciencer.filters.FilterByFieldOfStudy("Computer Science"))
 
 # Run one iteration
 results = sciencer.iterate()
@@ -111,10 +113,11 @@ For more examples on how to use the Sciencer toolkit, please check the directory
 
 ## Filters
 
-| Name              | Description                     | Parameters                                                                          |
-| ----------------- | :------------------------------ | ----------------------------------------------------------------------------------- |
-| By Year           | Filters a paper by its year     | The lowest acceptable year (inclusive) <br> The highest acceptable year (inclusive) |
-| By Abstract Words | Filters a paper by its abstract | The collection of words the abstract should include (at least one)                  |
+| Name              | Description                           | Parameters                                                                          |
+| ----------------- | :------------------------------------ | ----------------------------------------------------------------------------------- |
+| By Year           | Filters a paper by its year           | The lowest acceptable year (inclusive) <br> The highest acceptable year (inclusive) |
+| By Abstract Words | Filters a paper by its abstract       | The collection of words the abstract should include (at least one)                  |
+| By Field Of Study | Filters a paper by its field of study | The field of study the paper should have                                            |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
