@@ -55,6 +55,10 @@ if __name__ == "__main__":
     # Has 'social' word
     filter_social_in_abstract = sciencer.filters.FilterByAbstract("social")
 
+    # Has 'Computer Science' field of study
+    filter_has_computer_science_field_of_study = sciencer.filters.FilterByFieldOfStudy(
+        "Computer Science")
+
     # Setup sciencer
     s = sciencer.Sciencer()
     s.add_provider(s2_provider)
@@ -66,6 +70,7 @@ if __name__ == "__main__":
     s.add_expander(exp_citations)
     s.add_filter(filter_year)
     s.add_filter(filter_social_in_abstract)
+    s.add_filter(filter_has_computer_science_field_of_study)
 
     callbacks = custom_callbacks()
 

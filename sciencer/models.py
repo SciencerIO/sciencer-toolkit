@@ -62,6 +62,7 @@ class Paper:
     authors_ids: Set[str] = field(default_factory=set)
     references_ids: Set[str] = field(default_factory=set)
     citations_ids: Set[str] = field(default_factory=set)
+    fields_of_study: Set[str] = field(default_factory=set)
     abstract: Optional[str] = field(default=None)
     title: Optional[str] = field(default=None)
     year: Optional[int] = field(default=None)

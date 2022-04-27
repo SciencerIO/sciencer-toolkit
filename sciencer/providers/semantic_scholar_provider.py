@@ -9,7 +9,7 @@ from ..models import Paper, PaperIDs
 
 
 S2_FIELDS = ["title", "externalIds", "authors",
-             "abstract", "year"]
+             "abstract", "year", "fieldsOfStudy"]
 S2_NESTED_FIELDS = [
     "references.paperId", "citations.paperId"]
 S2_URL_SINGLE_FIELDS = "".join([f"{field}," for field in S2_FIELDS])[:-1]
@@ -89,6 +89,12 @@ def create_paper_from_json(paper_json) -> Paper:
     if "citations" in paper_json and len(paper_json["citations"]) > 0:
         for ref in paper_json["citations"]:
             paper.citations_ids.add(ref['paperId'])
+
+    if "fieldsOfStudy" in paper_json \
+            and paper_json["fieldsOfStudy"] is not None \
+            and len(paper_json["fieldsOfStudy"]) > 0:
+        for field in paper_json["fieldsOfStudy"]:
+            paper.fields_of_study.add(field)
 
     return paper
 
