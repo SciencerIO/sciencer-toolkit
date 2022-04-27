@@ -14,13 +14,13 @@ paper_2_abstract = "termR1 termR2 termR3 " + \
     paper_abstract_term_3
 
 paper_1 = Paper("")
-paper_1.set_abstract(paper_1_abstract)
+paper_1.abstract = paper_1_abstract
 
 paper_2 = Paper("")
-paper_2.set_abstract(paper_2_abstract)
+paper_2.abstract = paper_2_abstract
 
 paper_3 = Paper("")
-paper_3.set_abstract(paper_2_abstract)
+paper_3.abstract = paper_2_abstract
 
 
 class TestCollectorByAuthor(TestCase):

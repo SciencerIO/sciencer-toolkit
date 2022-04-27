@@ -8,11 +8,11 @@ author_1_id = "author_1"
 author_2_id = "author_2"
 
 paper_1 = Paper("id_1")
-paper_1.add_author(author_1_id)
-paper_1.add_author(author_2_id)
+paper_1.authors_ids.add(author_1_id)
+paper_1.authors_ids.add(author_2_id)
 
 paper_2 = Paper("id_2")
-paper_2.add_author(author_1_id)
+paper_2.authors_ids.add(author_1_id)
 
 
 class TestCollectorByAuthor(TestCase):
