@@ -16,13 +16,12 @@ class FilterByAbstract(Filter):
             accept_when_empty (bool, optional): when True, the Filter accepts papers \
                 without the necessary properties to check validity. Defaults to False.
         """
-        super().__init__(policies=[])
+        super().__init__(policies=[], accept_when_empty=accept_when_empty)
         self.__word: str = word
-        self.__accept_when_empty: bool = accept_when_empty
 
     def is_valid(self, paper: Paper) -> bool:
         if paper.abstract is None:
-            return self.__accept_when_empty
+            return self._accept_when_empty
         return self.__word in paper.abstract
 
     def __str__(self) -> str:

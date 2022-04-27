@@ -16,14 +16,13 @@ class FilterByYear(Filter):
             accept_when_empty (bool, optional): when True, the Filter accepts papers without the \
                 necessary properties to check validity. Defaults to False.
         """
-        super().__init__(policies=[])
+        super().__init__(policies=[], accept_when_empty=accept_when_empty)
         self.__min: int = min_year
         self.__max: int = max_year
-        self.__accept_when_empty = accept_when_empty
 
     def is_valid(self, paper: Paper) -> bool:
         if paper.year is None:
-            return self.__accept_when_empty
+            return self._accept_when_empty
 
         return self.__min <= paper.year <= self.__max
 
