@@ -10,10 +10,10 @@ FIELDS_OF_STUDY_WITH_CORRECT = [CORRECT_WORD]
 FIELDS_OF_STUDY_WITHOUT_CORRECT = [INCORRECT_WORD]
 
 paper_with_correct_fields_of_study = Paper("id_wc")
-paper_with_correct_fields_of_study.add_field_of_study(CORRECT_WORD)
+paper_with_correct_fields_of_study.fields_of_study.add(CORRECT_WORD)
 
 paper_without_correct_fields_of_study = Paper("id_woc")
-paper_without_correct_fields_of_study.add_field_of_study(
+paper_without_correct_fields_of_study.fields_of_study.add(
     INCORRECT_WORD)
 
 paper_with_default_fields_of_study = Paper("wc_da")
