@@ -10,15 +10,15 @@ ABSTRACT_WITH_CORRECT = "Hello " + CORRECT_WORD + " world"
 ABSTRACT_WITHOUT_CORRECT = "Hello empty world"
 
 paper_with_abstract_with_correct = Paper("id_wc")
-paper_with_abstract_with_correct.set_abstract(ABSTRACT_WITH_CORRECT)
+paper_with_abstract_with_correct.abstract = ABSTRACT_WITH_CORRECT
 
 paper_with_abstract_without_correct = Paper("id_woc")
-paper_with_abstract_without_correct.set_abstract(ABSTRACT_WITHOUT_CORRECT)
+paper_with_abstract_without_correct.abstract = ABSTRACT_WITHOUT_CORRECT
 
 paper_with_default_abstract = Paper("wc_da")
 
 paper_with_empty_abstract = Paper("wc_em")
-paper_with_empty_abstract.set_abstract("")
+paper_with_empty_abstract.abstract = ""
 
 
 class TestYearFilter(unittest.TestCase):

@@ -25,7 +25,7 @@ class ExpandByAuthors(Expander):
         papers_by_authors: Dict[str, Set[Paper]] = {}
 
         for paper in papers:
-            for author_id in paper.authors:
+            for author_id in paper.authors_ids:
                 if author_id not in papers_by_authors:
                     papers_by_authors[author_id] = set()
                 papers_by_authors[author_id].add(paper)

@@ -25,7 +25,7 @@ class ExpandByReferences(Expander):
 
         references_by_referenced_paper: Dict[str, Set[Paper]] = {}
         for paper in papers:
-            for reference in paper.references:
+            for reference in paper.references_ids:
                 if reference not in references_by_referenced_paper:
                     references_by_referenced_paper[reference] = set()
                 references_by_referenced_paper[reference].add(paper)

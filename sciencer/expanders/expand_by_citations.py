@@ -22,7 +22,7 @@ class ExpandByCitations(Expander):
 
         citations_by_cited_paper: Dict[str, Set[Paper]] = {}
         for paper in papers:
-            for citation in paper.citations:
+            for citation in paper.citations_ids:
                 if citation not in citations_by_cited_paper:
                     citations_by_cited_paper[citation] = set()
                 citations_by_cited_paper[citation].add(paper)

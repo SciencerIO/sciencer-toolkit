@@ -19,16 +19,20 @@ def convert_to_row(paper: Paper) -> Dict[str, str]:
     row = {}
     row['title'] = paper.title if paper.title is not None else ""
     row['year'] = str(paper.year) if paper.year is not None else ""
-    row['authors_s2_id'] =  "["+''.join([f"{author_id};" for author_id in paper.authors])[:-1]+"]"
+    row['authors_s2_id'] = "[" + \
+        ''.join([f"{author_id};" for author_id in paper.authors_ids])[:-1]+"]"
     return row
 
+
 field_names = ['title', 'authors_s2_id', 'year', 'accepted']
+
 
 class WriteToCSVCallbacks(Callbacks):
     """Class that writes to a csv file
        The csv file includes all the papers considered during the expansion
        Each entry includes the paper's title, authors (S2 Ids), year, and if it was accepted
     """
+
     def __init__(self, file_path: str) -> None:
         self.__path = file_path
         with open(self.__path, mode='w', newline='', encoding="utf-8") as file:
