@@ -144,7 +144,7 @@ For more examples on how to use the Sciencer toolkit, please check the directory
   - [ ] Add Expand by Venue/Proceedings
 - [ ] Add Filters
   - [ ] Add Filter by Number of Citations
-  - [ ] Add Filter by Topic
+  - [x] Add Filter by Topic
   - [ ] Add Filter by Keywords
 - [ ] Add Compound Filters
 - [x] Add utility to write results to a *.csv
