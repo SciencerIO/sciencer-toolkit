@@ -4,9 +4,9 @@ from sciencer.providers import SemanticScholarProvider
 from sciencer.providers.provider import Provider
 
 # Author: Oren Etzioni
-# Visited on 25/03/2022
+# Visited on 17/06/2022
 author_id = "40603865"
-author_number_papers = 380
+author_number_papers = 379
 
 # Papers:
 # Visited on 18/03/2022
