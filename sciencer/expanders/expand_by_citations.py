@@ -2,8 +2,11 @@
 """
 from typing import Callable,  List, Dict, Set
 
+from sciencer.policies import Policy
+
 from ..models import Paper
 from ..providers.provider import Provider
+from ..policies import Policy
 from .expander import Expander
 
 
@@ -12,7 +15,7 @@ class ExpandByCitations(Expander):
     """
 
     def __init__(self) -> None:
-        super().__init__([])
+        super().__init__([Policy.BY_DOI])
 
     def execute(self,
                 papers: List[Paper],
@@ -22,6 +25,13 @@ class ExpandByCitations(Expander):
 
         citations_by_cited_paper: Dict[str, Set[Paper]] = {}
         for paper in papers:
+            if paper.lazy_loaded:
+                for provider in providers:
+                    provider.update_paper(paper)
+
+                if not paper.lazy_loaded:
+                    break
+
             for citation in paper.citations_ids:
                 if citation not in citations_by_cited_paper:
                     citations_by_cited_paper[citation] = set()

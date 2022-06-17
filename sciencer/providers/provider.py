@@ -43,3 +43,12 @@ class Provider(HasPolicy, ABC):
         Returns:
             List[Paper]: The list of papers that include the terms
         """
+
+    @abstractmethod
+    def update_paper(self, paper: Paper) -> None:
+        """Updates a new paper field with the most recent values on the provider.
+
+        Args:
+            paper (Paper): paper to update
+
+        """

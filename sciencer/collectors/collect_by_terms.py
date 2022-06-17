@@ -28,15 +28,9 @@ class CollectByTerms(Collector):
             provider_papers = provider.get_paper_by_terms(
                 self.__terms, self.__max_papers)
 
-            if len(provider_papers) > 0:
-                for paper in provider_papers:
-                    resulting_paper = provider.get_paper_by_id(paper.paper_id)
-                    if resulting_paper is not None:
-                        papers.append(resulting_paper)
-                break
+            papers.extend(provider_papers)
 
         return papers
 
     def __str__(self) -> str:
-        return f"<CollectorByTerms \
-            [terms: { ''.join([str(term) + ', ' for term in self.__terms])}]>"
+        return f"<CollectorByTerms[terms: { ''.join([str(term) + ', ' for term in self.__terms])}]>"
