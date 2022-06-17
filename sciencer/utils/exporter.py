@@ -33,4 +33,3 @@ class BibTexExporter(PaperExporter):
 
     def export_paper(self, paper: Paper) -> str:
         pass
-
