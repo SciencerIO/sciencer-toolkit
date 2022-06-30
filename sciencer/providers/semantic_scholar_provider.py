@@ -56,7 +56,7 @@ def add_external_ids(paper: Paper, external_ids_json) -> None:
                                   external_ids_json["ACL"])
 
 
-def create_paper_from_json(paper_json) -> Paper:
+def create_paper_from_json(paper_json, lazy_loaded : bool = False) -> Paper:
     """Create a Paper Object based on available json dictionary
 
     Args:
@@ -82,19 +82,22 @@ def create_paper_from_json(paper_json) -> Paper:
     if "year" in paper_json and paper_json["year"] is not None:
         paper.year = paper_json["year"]
 
-    if "references" in paper_json and len(paper_json["references"]) > 0:
-        for ref in paper_json["references"]:
-            paper.references_ids.add(ref['paperId'])
-
-    if "citations" in paper_json and len(paper_json["citations"]) > 0:
-        for ref in paper_json["citations"]:
-            paper.citations_ids.add(ref['paperId'])
-
     if "fieldsOfStudy" in paper_json \
             and paper_json["fieldsOfStudy"] is not None \
             and len(paper_json["fieldsOfStudy"]) > 0:
         for field in paper_json["fieldsOfStudy"]:
             paper.fields_of_study.add(field)
+
+    paper.lazy_loaded = lazy_loaded
+
+    if not lazy_loaded:
+        if "references" in paper_json and len(paper_json["references"]) > 0:
+            for ref in paper_json["references"]:
+                paper.references_ids.add(ref['paperId'])
+
+        if "citations" in paper_json and len(paper_json["citations"]) > 0:
+            for ref in paper_json["citations"]:
+                paper.citations_ids.add(ref['paperId'])
 
     return paper
 
@@ -195,6 +198,7 @@ class SemanticScholarProvider(Provider):
 
             url = (
                 f"https://api.semanticscholar.org/graph/v1/paper/search?query={term_query}"
+                + f"&fields={S2_URL_SINGLE_FIELDS}"
                 + f"&offset={offset}"
                 + f"&limit={papers_to_retrieve}"
             )
@@ -222,7 +226,7 @@ class SemanticScholarProvider(Provider):
             response_json = response.json()
 
             resulting_papers.update([create_paper_from_json(
-                paper_json) for paper_json in response_json["data"]])
+                paper_json, True) for paper_json in response_json["data"]])
 
             remaining_papers = max_papers - len(resulting_papers)
 
@@ -232,3 +236,11 @@ class SemanticScholarProvider(Provider):
             offset = response_json["next"]
 
         return list(resulting_papers)
+
+    def update_paper(self, paper: Paper) -> None:
+        new_paper = self.get_paper_by_id(paper_id=paper.paper_id)
+
+        if new_paper is not None:
+            paper.references_ids = new_paper.references_ids
+            paper.citations_ids = new_paper.citations_ids
+            paper.lazy_loaded = False

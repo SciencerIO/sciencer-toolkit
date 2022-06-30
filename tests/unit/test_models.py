@@ -285,3 +285,8 @@ class TestPaperModel(unittest.TestCase):
 
         self.assertEqual(len(result), 1)
         self.assertIn(correct_text_value, result)
+
+    def test_paper_not_lazy_loaded_by_default(self):
+        paper = Paper("id_1")
+
+        self.assertFalse(paper.lazy_loaded)

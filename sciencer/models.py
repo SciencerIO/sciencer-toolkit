@@ -66,10 +66,11 @@ class Paper:
     abstract: Optional[str] = field(default=None)
     title: Optional[str] = field(default=None)
     year: Optional[int] = field(default=None)
+    lazy_loaded: bool = field(default=False)
 
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, Paper):
-            return __o.paper_id == self.paper_id
+            return __o.paper_id == self.paper_id and __o.lazy_loaded == self.lazy_loaded
         return False
 
     def __hash__(self) -> int:

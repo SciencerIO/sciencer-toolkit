@@ -4,6 +4,7 @@ from typing import Callable, List, Dict, Set
 
 from ..models import Paper
 from ..providers.provider import Provider
+from ..policies import Policy
 from .expander import Expander
 
 
@@ -15,7 +16,7 @@ class ExpandByReferences(Expander):
     """
 
     def __init__(self) -> None:
-        super().__init__([])
+        super().__init__([Policy.BY_DOI])
 
     def execute(self,
                 papers: List[Paper],
@@ -25,6 +26,13 @@ class ExpandByReferences(Expander):
 
         references_by_referenced_paper: Dict[str, Set[Paper]] = {}
         for paper in papers:
+            if paper.lazy_loaded:
+                for provider in providers:
+                    provider.update_paper(paper)
+
+                if not paper.lazy_loaded:
+                    break
+
             for reference in paper.references_ids:
                 if reference not in references_by_referenced_paper:
                     references_by_referenced_paper[reference] = set()
@@ -45,4 +53,4 @@ class ExpandByReferences(Expander):
         return list(resulting_papers)
 
     def __str__(self) -> str:
-        return "<ExpanmderByReferences>"
+        return "<ExpanderByReferences>"

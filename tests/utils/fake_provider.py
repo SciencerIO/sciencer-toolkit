@@ -35,3 +35,6 @@ class FakeProvider(Provider):
             return resulting_papers[max_papers:]
 
         return resulting_papers
+
+    def update_paper(self, paper: Paper) -> None:
+        pass
