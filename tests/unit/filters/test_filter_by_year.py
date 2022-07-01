@@ -13,8 +13,9 @@ paper_without_year = Paper("id_woy")
 
 class TestYearFilter(unittest.TestCase):
     def test_year_filter_incorrect_min_and_max(self):
-        filter = FilterByYear(PAPER_YEAR + 1, PAPER_YEAR - 1)
-        self.assertRaises(Exception)
+        with self.assertRaises(Exception):
+            filter = FilterByYear(PAPER_YEAR + 1, PAPER_YEAR - 1)
+    
 
     def test_year_filter_outside(self):
         filter = FilterByYear(PAPER_YEAR - 2, PAPER_YEAR - 1)

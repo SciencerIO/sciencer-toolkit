@@ -19,6 +19,8 @@ class FilterByYear(Filter):
         super().__init__(policies=[], accept_when_empty=accept_when_empty)
         self.__min: int = min_year
         self.__max: int = max_year
+        if self.__min > self.__max:
+            raise ValueError
 
     def is_valid(self, paper: Paper) -> bool:
         if paper.year is None:
