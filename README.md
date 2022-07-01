@@ -81,6 +81,8 @@ sciencer.add_filter(sciencer.filters.FilterByYear(min_year=2010, max_year=2030))
 sciencer.add_filter(sciencer.filters.FilterByAbstract("social"))
 ## this filter will reject all the papers that do not have the field of study Computer Science
 sciencer.add_filter(sciencer.filters.FilterByFieldOfStudy("Computer Science"))
+## this filter will reject all the papers that have less than 100 and more that 999 citations
+sciencer.add_filter(sciencer.filters.FilterByCitations(100, 999))
 
 # Run one iteration
 results = sciencer.iterate()
