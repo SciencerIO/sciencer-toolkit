@@ -21,6 +21,8 @@ class FilterByCitations(Filter):
         super().__init__(policies=[], accept_when_empty=accept_when_empty)
         self.__min: int = min_citations
         self.__max: int = max_citations
+        if self.__min > self.__max:
+            raise ValueError
 
     def is_valid(self, paper: Paper) -> bool:
         if paper.citations_ids is None:

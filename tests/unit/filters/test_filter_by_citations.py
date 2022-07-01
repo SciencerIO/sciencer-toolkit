@@ -13,8 +13,8 @@ paper_without_citations = Paper("id_without_citations")
 
 class TestCitationsFilter(unittest.TestCase):
     def test_citations_filter_incorrect_min_and_max(self):
-        filter = FilterByCitations(PAPER_CITATIONS + 1, PAPER_CITATIONS - 1)
-        self.assertRaises(Exception)
+        with self.assertRaises(Exception):
+            FilterByCitations(PAPER_CITATIONS + 1, PAPER_CITATIONS - 1)
 
     def test_citations_filter_outside(self):
         filter = FilterByCitations(PAPER_CITATIONS - 2, PAPER_CITATIONS - 1)
