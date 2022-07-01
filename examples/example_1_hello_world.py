@@ -59,6 +59,8 @@ if __name__ == "__main__":
     filter_has_computer_science_field_of_study = sciencer.filters.FilterByFieldOfStudy(
         "Computer Science")
 
+    filter_by_large_number_citations = sciencer.filters.FilterByCitations(100,999999)
+
     # Setup sciencer
     s = sciencer.Sciencer()
     s.add_provider(s2_provider)
@@ -71,6 +73,7 @@ if __name__ == "__main__":
     s.add_filter(filter_year)
     s.add_filter(filter_social_in_abstract)
     s.add_filter(filter_has_computer_science_field_of_study)
+    s.add_filter(filter_by_large_number_citations)
 
     callbacks = custom_callbacks()
 

@@ -113,11 +113,12 @@ For more examples on how to use the Sciencer toolkit, please check the directory
 
 ## Filters
 
-| Name              | Description                           | Parameters                                                                          |
-| ----------------- | :------------------------------------ | ----------------------------------------------------------------------------------- |
-| By Year           | Filters a paper by its year           | The lowest acceptable year (inclusive) <br> The highest acceptable year (inclusive) |
-| By Abstract Words | Filters a paper by its abstract       | The collection of words the abstract should include (at least one)                  |
-| By Field Of Study | Filters a paper by its field of study | The field of study the paper should have                                            |
+| Name              | Description                                | Parameters                                                                                  |
+| ----------------- | :----------------------------------------- | ------------------------------------------------------------------------------------------- |
+| By Year           | Filters a paper by its year                | The lowest acceptable year (inclusive) <br> The highest acceptable year (inclusive)         |
+| By Abstract Words | Filters a paper by its abstract            | The collection of words the abstract should include (at least one)                          |
+| By Field Of Study | Filters a paper by its field of study      | The field of study the paper should have                                                    |
+| By Citations      | Filters a paper by its number of citations | The minimum number of citations (inclusive) <br> The maximum number of citations(inclusive) |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -143,7 +144,7 @@ For more examples on how to use the Sciencer toolkit, please check the directory
   - [x] Add Expand by References
   - [ ] Add Expand by Venue/Proceedings
 - [ ] Add Filters
-  - [ ] Add Filter by Number of Citations
+  - [x] Add Filter by Number of Citations
   - [x] Add Filter by Topic
   - [ ] Add Filter by Keywords
 - [ ] Add Compound Filters
