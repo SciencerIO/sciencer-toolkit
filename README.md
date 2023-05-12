@@ -166,3 +166,22 @@ If you have a suggestion that would improve the toolkit just send us a Pull Requ
 If you are looking for an additional collector/filter/expander/provider or just want to report a bug, you can also simply open an issue with the tag "enchament" or "bug", respectively.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
+## Installing and Running
+
+We suggest the following solution:
+
+```bash
+# Create and activate venv
+python3 -m venv .
+source ./bin/activate
+
+# Install the packages
+pip install .
+
+# Run an example
+python3 ./examples/example_1_hello_world.py
+
+# To run the Server run
+python3 ./server/main.py
+```

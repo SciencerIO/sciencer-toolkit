@@ -28,5 +28,5 @@ setup(
     packages=["sciencer", "sciencer.collectors", "sciencer.expanders",
               "sciencer.providers", "sciencer.filters", "sciencer.utils"],
     include_package_data=True,
-    install_requires=["requests"],
+    install_requires=["requests","fastapi","uvicorn[standard]"],
 )
