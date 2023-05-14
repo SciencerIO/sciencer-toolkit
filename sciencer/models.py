@@ -10,7 +10,7 @@ class PaperIDs:
     """Paper IDs wrapper
     """
 
-    class LABEL(Enum):
+    class LABEL(str, Enum):
         """External IDs label """
         DOI = "DOI"
         MAG = "MAG"
@@ -26,7 +26,7 @@ class PaperIDs:
         Args:
             paper_id (str): the main ID of the paper
         """
-        self.__ids: Dict[PaperIDs.LABEL, str] = {}
+        self._ids: Dict[PaperIDs.LABEL, str] = {}
 
     def add_id(self, name: PaperIDs.LABEL, value: str) -> None:
         """Adds an id. If it already exists, overrites it
@@ -35,7 +35,7 @@ class PaperIDs:
             name (PaperIDs.LABEL): name of the id
             value (str): value of the id
         """
-        self.__ids[name] = value
+        self._ids[name] = value
 
     def get_id(self, name: PaperIDs.LABEL) -> Optional[str]:
         """Gets an ID by its name
@@ -46,10 +46,10 @@ class PaperIDs:
         Returns:
             Optional[str]: The value of the ID. If it does not exist, returns None
         """
-        if name not in self.__ids:
+        if name not in self._ids:
             return None
 
-        return self.__ids[name]
+        return self._ids[name]
 
 
 @dataclass
