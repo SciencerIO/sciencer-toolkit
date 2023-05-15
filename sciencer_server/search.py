@@ -297,17 +297,19 @@ class SearchCls:
         callbacks = self.search_callbacks(Search=self)
 
         # for each num_iterations
+        batch = []
         for i in range(self.config.num_iterations):
             if self.stop_thread:
                 print("Exiting loop.")
                 break
             print(f"Starting iteration #{i+1}...")
-            if i == 0:
+            # TODO: Add stop conditions during iteration
+            if batch == []:
                 batch = s.iterate(
                     remove_source_from_results=True, callbacks=[callbacks]
                 )
             else:
-                batch = s.iterate(callbacks=[callbacks])
+                batch = s.iterate(source_papers=batch, callbacks=[callbacks])
             print(f" 📜 iteration #{i+1} collected {len(batch)} papers.")
 
         self.status = SearchStatus.finished
