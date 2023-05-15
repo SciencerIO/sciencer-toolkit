@@ -32,6 +32,15 @@ class SearchConfiguration(BaseModel):
     collectors: list[Collector] = []
 
 
+class ResultsIncludes(str, Enum):
+    all = "all"
+    collected = "collected"
+    expanded = "expanded"
+    filtered = "filtered"
+    accepted = "accepted"
+    rejected = "rejected"
+
+
 class Results(BaseModel):
     Collected: list[Paper] = []
     Expanded: list[Paper] = []
@@ -40,14 +49,34 @@ class Results(BaseModel):
     Rejected: list[Paper] = []
 
     @staticmethod
-    def from_cls(results: "ResultsCls") -> "Results":
-        return Results(
-            Collected=[Paper.from_cls(paper) for paper in results.Collected],
-            Expanded=[Paper.from_cls(paper) for paper in results.Expanded],
-            Filtered=[Paper.from_cls(paper) for paper in results.Filtered],
-            Accepted=[Paper.from_cls(paper) for paper in results.Accepted],
-            Rejected=[Paper.from_cls(paper) for paper in results.Rejected],
-        )
+    def from_cls(
+        results: "ResultsCls", includes: list[ResultsIncludes] = []
+    ) -> "Results":
+        out_results = Results()
+        if includes == [] or ResultsIncludes.all in includes:
+            out_results.Collected = [
+                Paper.from_cls(paper) for paper in results.Collected
+            ]
+            out_results.Expanded = [Paper.from_cls(paper) for paper in results.Expanded]
+            out_results.Filtered = [Paper.from_cls(paper) for paper in results.Filtered]
+            out_results.Accepted = [Paper.from_cls(paper) for paper in results.Accepted]
+            out_results.Rejected = [Paper.from_cls(paper) for paper in results.Rejected]
+            return out_results
+
+        if ResultsIncludes.collected in includes:
+            out_results.Collected = [
+                Paper.from_cls(paper) for paper in results.Collected
+            ]
+        if ResultsIncludes.expanded in includes:
+            out_results.Expanded = [Paper.from_cls(paper) for paper in results.Expanded]
+        if ResultsIncludes.filtered in includes:
+            out_results.Filtered = [Paper.from_cls(paper) for paper in results.Filtered]
+        if ResultsIncludes.accepted in includes:
+            out_results.Accepted = [Paper.from_cls(paper) for paper in results.Accepted]
+        if ResultsIncludes.rejected in includes:
+            out_results.Rejected = [Paper.from_cls(paper) for paper in results.Rejected]
+
+        return out_results
 
 
 class ResultsCls:
@@ -66,13 +95,17 @@ class Search(BaseModel):
     results: Results = Results()
 
     @staticmethod
-    def from_cls(search: "SearchCls") -> "Search":
-        return Search(
+    def from_cls(search: "SearchCls", includes: list[ResultsIncludes] = []) -> "Search":
+        out_search = Search(
             id=search.id,
             status=search.status,
             config=search.config,
-            results=Results.from_cls(search.results),
         )
+
+        if includes != []:
+            out_search.results = Results.from_cls(search.results, includes=includes)
+
+        return out_search
 
 
 class SearchCls:
@@ -219,12 +252,11 @@ class SearchCls:
                     pass
                 case _:
                     pass
-        
+
         if sciencer_expanders == []:
             sciencer_expanders.append(sciencer.expanders.ExpandByReferences())
             sciencer_expanders.append(sciencer.expanders.ExpandByAuthors())
             sciencer_expanders.append(sciencer.expanders.ExpandByCitations())
-
 
         # Filters
         sciencer_filters = []
@@ -241,7 +273,9 @@ class SearchCls:
                     if max_year is None:
                         max_year = 9999
                     sciencer_filters.append(
-                        sciencer.filters.FilterByYear(min_year=min_year, max_year=max_year)
+                        sciencer.filters.FilterByYear(
+                            min_year=min_year, max_year=max_year
+                        )
                     )
                     pass
                 case FilterType.abstract:
@@ -252,7 +286,9 @@ class SearchCls:
                     sciencer_filters.append(sciencer.filters.FilterByAbstract(term))
                     pass
                 case FilterType.field_of_study:
-                    field_of_study: Optional[str] = filter.parameters.get("field_of_study")
+                    field_of_study: Optional[str] = filter.parameters.get(
+                        "field_of_study"
+                    )
                     if field_of_study is None:
                         print("No field_of_study provided for FilterByFieldOfStudy")
                         continue
@@ -261,8 +297,12 @@ class SearchCls:
                     )
                     pass
                 case FilterType.citations:
-                    min_citations: Optional[int] = filter.parameters.get("min_citations")
-                    max_citations: Optional[int] = filter.parameters.get("max_citations")
+                    min_citations: Optional[int] = filter.parameters.get(
+                        "min_citations"
+                    )
+                    max_citations: Optional[int] = filter.parameters.get(
+                        "max_citations"
+                    )
                     if (min_citations is None) or (max_citations is None):
                         print(
                             "No min_citations or max_citations provided for FilterByCitations"
@@ -290,7 +330,7 @@ class SearchCls:
 
         for exp in sciencer_expanders:
             s.add_expander(exp)
-        
+
         for fil in sciencer_filters:
             s.add_filter(fil)
 

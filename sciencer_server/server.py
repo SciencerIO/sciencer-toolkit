@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from search import SearchConfiguration, Search
+from search import SearchConfiguration, Search, ResultsIncludes
 from search_manager import SearchManager
 
 manager = SearchManager()
@@ -33,12 +33,11 @@ def create_search(config: SearchConfiguration):
 
 
 @server.get("/search/{search_id}")
-def get_search(search_id: int):
-    # TODO: implement partial get
+def get_search(search_id: int, include_results: list[ResultsIncludes] = []):
     search = manager.get_search(search_id)
     if search is None:
         return {"error": "Search not found"}
-    return {"search": Search.from_cls(search)}
+    return {"search": Search.from_cls(search, include_results)}
 
 
 @server.delete("/search/{search_id}")

@@ -14,6 +14,7 @@ class Collector(BaseModel):
     type: CollectorType
     parameters: dict = {}
 
+
 class ExpanderType(str, Enum):
     authors = "authors"
     references = "references"
@@ -46,7 +47,7 @@ class Paper(BaseModel):
     abstract: Optional[str] = None
     title: Optional[str] = None
     year: Optional[int] = None
-    
+
     @staticmethod
     def from_cls(paper: sciencer.Paper) -> "Paper":
         out_paper = Paper(
@@ -54,7 +55,7 @@ class Paper(BaseModel):
             external_ids=paper.external_ids._ids,
             abstract=paper.abstract,
             title=paper.title,
-            year=paper.year
+            year=paper.year,
         )
         if paper.authors_ids:
             out_paper.authors_ids = paper.authors_ids
