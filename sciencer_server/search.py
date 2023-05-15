@@ -1,8 +1,17 @@
 from pydantic import BaseModel
+from typing import Optional
 from enum import Enum
 import threading
 import sciencer
-from server_models import Filter, Expander, Collector, Paper
+from server_models import (
+    Filter,
+    Expander,
+    Collector,
+    Paper,
+    CollectorType,
+    ExpanderType,
+    FilterType,
+)
 
 
 # create an enum for search status
@@ -87,7 +96,7 @@ class SearchCls:
         def on_paper_collected(
             self, paper: sciencer.Paper, collector: sciencer.collectors.Collector
         ) -> None:
-            print(f"Paper {paper} collected by {collector} !")
+            # print(f"Paper {paper} collected by {collector} !")
             if self.search is not None:
                 self.search.results.Collected.append(paper)
 
@@ -97,7 +106,7 @@ class SearchCls:
             expander: sciencer.expanders.Expander,
             source_paper: sciencer.Paper,
         ) -> None:
-            print(f"Paper {paper} was expanded by {expander} from {source_paper}")
+            # print(f"Paper {paper} was expanded by {expander} from {source_paper}")
             if self.search is not None:
                 self.search.results.Expanded.append(paper)
 
@@ -107,7 +116,7 @@ class SearchCls:
             filter_executed: sciencer.filters.Filter,
             result: bool,
         ) -> None:
-            print(f"Paper {paper} was filtered by {filter_executed} and got {result}")
+            # print(f"Paper {paper} was filtered by {filter_executed} and got {result}")
             if self.search is not None:
                 self.search.results.Filtered.append(paper)
 
@@ -143,7 +152,7 @@ class SearchCls:
 
     def cancel(self):
         if self.thread is not None:
-            self.thread.stop()
+            self.stop_thread = True
             self.thread = None
             self.status = SearchStatus.cancelled
 
@@ -154,54 +163,136 @@ class SearchCls:
         s2_provider = sciencer.providers.SemanticScholarProvider(api_key="")
 
         # Collect
-        # col_doi = sciencer.collectors.CollectByDOI("10.1093/mind/LIX.236.433")
-        # col_author_id = sciencer.collectors.CollectByAuthorID("2262347")
-        col_terms = sciencer.collectors.CollectByTerms(
-            terms=[
-                "social",
-                "intelligence",
-                "machines",
-                "cognition",
-                "emotional",
-                "human",
-            ],
-            max_papers=20,
-        )
+        sciencer_collectors = []
+        for collector in self.config.collectors:
+            match collector.type:
+                case CollectorType.author_id:
+                    author_id = collector.parameters.get("author_id")
+                    if author_id is None:
+                        print("No author_id provided for CollectByAuthorID")
+                        continue
+                    sciencer_collectors.append(
+                        sciencer.collectors.CollectByAuthorID(author_id)
+                    )
+                    pass
+                case CollectorType.doi:
+                    doi = collector.parameters.get("doi")
+                    if doi is None:
+                        print("No doi provided for CollectByDOI")
+                        continue
+                    sciencer_collectors.append(sciencer.collectors.CollectByDOI(doi))
+                    pass
+                case CollectorType.terms:
+                    terms: Optional[list[str]] = collector.parameters.get("terms")
+                    if terms is None:
+                        print("No terms provided for CollectByTerms")
+                        continue
+                    max_papers: Optional[int] = collector.parameters.get("max_papers")
+                    if max_papers is None:
+                        max_papers = 100
+                    sciencer_collectors.append(
+                        sciencer.collectors.CollectByTerms(
+                            terms=terms, max_papers=max_papers
+                        )
+                    )
+                    pass
+                case _:
+                    pass
+
+        if sciencer_collectors == []:
+            print("No collectors provided")
+            self.status = SearchStatus.failed
+            return
 
         # Expanders
-        exp_author = sciencer.expanders.ExpandByAuthors()
-        # exp_references = sciencer.expanders.ExpandByReferences()
-        # exp_citations = sciencer.expanders.ExpandByCitations()
+        sciencer_expanders = []
+        for expander in self.config.expanders:
+            match expander.type:
+                case ExpanderType.authors:
+                    sciencer_expanders.append(sciencer.expanders.ExpandByAuthors())
+                    pass
+                case ExpanderType.references:
+                    sciencer_expanders.append(sciencer.expanders.ExpandByReferences())
+                    pass
+                case ExpanderType.citations:
+                    sciencer_expanders.append(sciencer.expanders.ExpandByCitations())
+                    pass
+                case _:
+                    pass
+        
+        if sciencer_expanders == []:
+            sciencer_expanders.append(sciencer.expanders.ExpandByReferences())
+            sciencer_expanders.append(sciencer.expanders.ExpandByAuthors())
+            sciencer_expanders.append(sciencer.expanders.ExpandByCitations())
+
 
         # Filters
-        # After 2010
-        filter_year = sciencer.filters.FilterByYear(min_year=2010, max_year=2030)
-
-        # Has 'social' word
-        filter_social_in_abstract = sciencer.filters.FilterByAbstract("social")
-
-        # Has 'Computer Science' field of study
-        filter_has_computer_science_field_of_study = (
-            sciencer.filters.FilterByFieldOfStudy("Computer Science")
-        )
-
-        filter_by_large_number_citations = sciencer.filters.FilterByCitations(
-            100, 999999
-        )
+        sciencer_filters = []
+        for filter in self.config.filters:
+            match filter.type:
+                case FilterType.year:
+                    min_year: Optional[int] = filter.parameters.get("min_year")
+                    max_year: Optional[int] = filter.parameters.get("max_year")
+                    if (min_year is None) or (max_year is None):
+                        print("No min_year or max_year provided for FilterByYear")
+                        continue
+                    if min_year is None:
+                        min_year = 0
+                    if max_year is None:
+                        max_year = 9999
+                    sciencer_filters.append(
+                        sciencer.filters.FilterByYear(min_year=min_year, max_year=max_year)
+                    )
+                    pass
+                case FilterType.abstract:
+                    term: Optional[str] = filter.parameters.get("term")
+                    if term is None:
+                        print("No term provided for FilterByAbstract")
+                        continue
+                    sciencer_filters.append(sciencer.filters.FilterByAbstract(term))
+                    pass
+                case FilterType.field_of_study:
+                    field_of_study: Optional[str] = filter.parameters.get("field_of_study")
+                    if field_of_study is None:
+                        print("No field_of_study provided for FilterByFieldOfStudy")
+                        continue
+                    sciencer_filters.append(
+                        sciencer.filters.FilterByFieldOfStudy(field_of_study)
+                    )
+                    pass
+                case FilterType.citations:
+                    min_citations: Optional[int] = filter.parameters.get("min_citations")
+                    max_citations: Optional[int] = filter.parameters.get("max_citations")
+                    if (min_citations is None) or (max_citations is None):
+                        print(
+                            "No min_citations or max_citations provided for FilterByCitations"
+                        )
+                        continue
+                    if min_citations is None:
+                        min_citations = 0
+                    if max_citations is None:
+                        max_citations = 999999
+                    sciencer_filters.append(
+                        sciencer.filters.FilterByCitations(
+                            min_citations=min_citations, max_citations=max_citations
+                        )
+                    )
+                    pass
+                case _:
+                    pass
 
         # Setup sciencer
         s = sciencer.Sciencer()
         s.add_provider(s2_provider)
-        # s.add_collector(col_doi)
-        # s.add_collector(col_author_id)
-        s.add_collector(col_terms)
-        s.add_expander(exp_author)
-        # s.add_expander(exp_references)
-        # s.add_expander(exp_citations)
-        s.add_filter(filter_year)
-        s.add_filter(filter_social_in_abstract)
-        s.add_filter(filter_has_computer_science_field_of_study)
-        s.add_filter(filter_by_large_number_citations)
+
+        for col in sciencer_collectors:
+            s.add_collector(col)
+
+        for exp in sciencer_expanders:
+            s.add_expander(exp)
+        
+        for fil in sciencer_filters:
+            s.add_filter(fil)
 
         callbacks = self.search_callbacks(Search=self)
 

@@ -27,11 +27,14 @@ def delete_searches():
 def create_search(config: SearchConfiguration):
     # TODO: validate config
     search = manager.create_search(config)
+    if search is None:
+        return {"error": "Search not created"}
     return {"search": Search.from_cls(search)}
 
 
 @server.get("/search/{search_id}")
 def get_search(search_id: int):
+    # TODO: implement partial get
     search = manager.get_search(search_id)
     if search is None:
         return {"error": "Search not found"}
