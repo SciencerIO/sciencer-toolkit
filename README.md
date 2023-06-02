@@ -183,5 +183,5 @@ pip install .
 python3 ./examples/example_1_hello_world.py
 
 # To run the Server run
-python3 ./server/main.py
+python3 ./sciencer_server/main.py
 ```

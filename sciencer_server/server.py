@@ -24,7 +24,7 @@ def delete_searches():
 
 
 @server.post("/search")
-def create_search(config: SearchConfiguration):
+def create_search(config: list[SearchConfiguration]):
     # TODO: validate config
     search = manager.create_search(config)
     if search is None:

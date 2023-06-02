@@ -8,7 +8,7 @@ class SearchManager:
         self.searches: list[SearchCls] = []
         self.search_id = 0
 
-    def create_search(self, config: SearchConfiguration) -> Optional[SearchCls]:
+    def create_search(self, config: list[SearchConfiguration]) -> Optional[SearchCls]:
         self.search_id += 1
         search = SearchCls(
             id=self.search_id, config=config
