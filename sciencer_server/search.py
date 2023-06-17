@@ -199,44 +199,40 @@ class SearchCls:
         s2_provider = sciencer.providers.SemanticScholarProvider(api_key="")
 
         papers_batch = []
-        for (i, config) in enumerate(self.config):
-
+        for i, config in enumerate(self.config):
             # Collect
             sciencer_collectors = []
             for collector in config.collectors:
-                match collector.type:
-                    case CollectorType.author_id:
-                        author_id = collector.parameters.get("author_id")
-                        if author_id is None:
-                            print("No author_id provided for CollectByAuthorID")
-                            continue
-                        sciencer_collectors.append(
-                            sciencer.collectors.CollectByAuthorID(author_id)
+                if collector.type == CollectorType.author_id:
+                    author_id = collector.parameters.get("author_id")
+                    if author_id is None:
+                        print("No author_id provided for CollectByAuthorID")
+                        continue
+                    sciencer_collectors.append(
+                        sciencer.collectors.CollectByAuthorID(author_id)
+                    )
+                    pass
+                elif collector.type == CollectorType.doi:
+                    doi = collector.parameters.get("doi")
+                    if doi is None:
+                        print("No doi provided for CollectByDOI")
+                        continue
+                    sciencer_collectors.append(sciencer.collectors.CollectByDOI(doi))
+                    pass
+                elif collector.type == CollectorType.terms:
+                    terms: Optional[list[str]] = collector.parameters.get("terms")
+                    if terms is None:
+                        print("No terms provided for CollectByTerms")
+                        continue
+                    max_papers: Optional[int] = collector.parameters.get("max_papers")
+                    if max_papers is None:
+                        max_papers = 100
+                    sciencer_collectors.append(
+                        sciencer.collectors.CollectByTerms(
+                            terms=terms, max_papers=max_papers
                         )
-                        pass
-                    case CollectorType.doi:
-                        doi = collector.parameters.get("doi")
-                        if doi is None:
-                            print("No doi provided for CollectByDOI")
-                            continue
-                        sciencer_collectors.append(sciencer.collectors.CollectByDOI(doi))
-                        pass
-                    case CollectorType.terms:
-                        terms: Optional[list[str]] = collector.parameters.get("terms")
-                        if terms is None:
-                            print("No terms provided for CollectByTerms")
-                            continue
-                        max_papers: Optional[int] = collector.parameters.get("max_papers")
-                        if max_papers is None:
-                            max_papers = 100
-                        sciencer_collectors.append(
-                            sciencer.collectors.CollectByTerms(
-                                terms=terms, max_papers=max_papers
-                            )
-                        )
-                        pass
-                    case _:
-                        pass
+                    )
+                    pass
 
             if sciencer_collectors == [] and i == 0:
                 print("No collectors provided")
@@ -246,18 +242,15 @@ class SearchCls:
             # Expanders
             sciencer_expanders = []
             for expander in config.expanders:
-                match expander.type:
-                    case ExpanderType.authors:
-                        sciencer_expanders.append(sciencer.expanders.ExpandByAuthors())
-                        pass
-                    case ExpanderType.references:
-                        sciencer_expanders.append(sciencer.expanders.ExpandByReferences())
-                        pass
-                    case ExpanderType.citations:
-                        sciencer_expanders.append(sciencer.expanders.ExpandByCitations())
-                        pass
-                    case _:
-                        pass
+                if expander.type == ExpanderType.authors:
+                    sciencer_expanders.append(sciencer.expanders.ExpandByAuthors())
+                    pass
+                elif expander.type == ExpanderType.references:
+                    sciencer_expanders.append(sciencer.expanders.ExpandByReferences())
+                    pass
+                elif expander.type == ExpanderType.citations:
+                    sciencer_expanders.append(sciencer.expanders.ExpandByCitations())
+                    pass
 
             if sciencer_expanders == []:
                 sciencer_expanders.append(sciencer.expanders.ExpandByReferences())
@@ -267,65 +260,62 @@ class SearchCls:
             # Filters
             sciencer_filters = []
             for filter in config.filters:
-                match filter.type:
-                    case FilterType.year:
-                        min_year: Optional[int] = filter.parameters.get("min_year")
-                        max_year: Optional[int] = filter.parameters.get("max_year")
-                        if (min_year is None) or (max_year is None):
-                            print("No min_year or max_year provided for FilterByYear")
-                            continue
-                        if min_year is None:
-                            min_year = 0
-                        if max_year is None:
-                            max_year = 9999
-                        sciencer_filters.append(
-                            sciencer.filters.FilterByYear(
-                                min_year=min_year, max_year=max_year
-                            )
+                if filter.type == FilterType.year:
+                    min_year: Optional[int] = filter.parameters.get("min_year")
+                    max_year: Optional[int] = filter.parameters.get("max_year")
+                    if (min_year is None) or (max_year is None):
+                        print("No min_year or max_year provided for FilterByYear")
+                        continue
+                    if min_year is None:
+                        min_year = 0
+                    if max_year is None:
+                        max_year = 9999
+                    sciencer_filters.append(
+                        sciencer.filters.FilterByYear(
+                            min_year=min_year, max_year=max_year
                         )
-                        pass
-                    case FilterType.abstract:
-                        term: Optional[str] = filter.parameters.get("term")
-                        if term is None:
-                            print("No term provided for FilterByAbstract")
-                            continue
-                        sciencer_filters.append(sciencer.filters.FilterByAbstract(term))
-                        pass
-                    case FilterType.field_of_study:
-                        field_of_study: Optional[str] = filter.parameters.get(
-                            "field_of_study"
+                    )
+                    pass
+                elif filter.type == FilterType.abstract:
+                    term: Optional[str] = filter.parameters.get("term")
+                    if term is None:
+                        print("No term provided for FilterByAbstract")
+                        continue
+                    sciencer_filters.append(sciencer.filters.FilterByAbstract(term))
+                    pass
+                elif filter.type == FilterType.field_of_study:
+                    field_of_study: Optional[str] = filter.parameters.get(
+                        "field_of_study"
+                    )
+                    if field_of_study is None:
+                        print("No field_of_study provided for FilterByFieldOfStudy")
+                        continue
+                    sciencer_filters.append(
+                        sciencer.filters.FilterByFieldOfStudy(field_of_study)
+                    )
+                    pass
+                elif filter.type == FilterType.citations:
+                    min_citations: Optional[int] = filter.parameters.get(
+                        "min_citations"
+                    )
+                    max_citations: Optional[int] = filter.parameters.get(
+                        "max_citations"
+                    )
+                    if (min_citations is None) or (max_citations is None):
+                        print(
+                            "No min_citations or max_citations provided for FilterByCitations"
                         )
-                        if field_of_study is None:
-                            print("No field_of_study provided for FilterByFieldOfStudy")
-                            continue
-                        sciencer_filters.append(
-                            sciencer.filters.FilterByFieldOfStudy(field_of_study)
+                        continue
+                    if min_citations is None:
+                        min_citations = 0
+                    if max_citations is None:
+                        max_citations = 999999
+                    sciencer_filters.append(
+                        sciencer.filters.FilterByCitations(
+                            min_citations=min_citations, max_citations=max_citations
                         )
-                        pass
-                    case FilterType.citations:
-                        min_citations: Optional[int] = filter.parameters.get(
-                            "min_citations"
-                        )
-                        max_citations: Optional[int] = filter.parameters.get(
-                            "max_citations"
-                        )
-                        if (min_citations is None) or (max_citations is None):
-                            print(
-                                "No min_citations or max_citations provided for FilterByCitations"
-                            )
-                            continue
-                        if min_citations is None:
-                            min_citations = 0
-                        if max_citations is None:
-                            max_citations = 999999
-                        sciencer_filters.append(
-                            sciencer.filters.FilterByCitations(
-                                min_citations=min_citations, max_citations=max_citations
-                            )
-                        )
-                        pass
-                    case _:
-                        pass
+                    )
+                    pass
 
             # Setup sciencer
             self.s = sciencer.Sciencer()
@@ -353,14 +343,16 @@ class SearchCls:
                         remove_source_from_results=True, callbacks=[callbacks]
                     )
                 else:
-                    papers_batch = self.s.iterate(source_papers=papers_batch, callbacks=[callbacks])
+                    papers_batch = self.s.iterate(
+                        source_papers=papers_batch, callbacks=[callbacks]
+                    )
                 print(f" 📜 iteration #{i+1} collected {len(papers_batch)} papers.")
 
         if self.stop_thread:
             self.status = SearchStatus.cancelled
             self.thread = None
             return
-        
+
         self.results.Accepted = papers_batch
         self.status = SearchStatus.finished
         self.thread = None
