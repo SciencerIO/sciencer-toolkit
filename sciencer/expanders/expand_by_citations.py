@@ -16,6 +16,7 @@ class ExpandByCitations(Expander):
 
     def __init__(self) -> None:
         super().__init__([Policy.BY_DOI])
+        self._stop: bool = False
 
     def execute(self,
                 papers: List[Paper],
@@ -39,6 +40,8 @@ class ExpandByCitations(Expander):
 
         for cited_paper_id, citation_papers in citations_by_cited_paper.items():
             for provider in providers:
+                if self._stop:
+                    return resulting_papers
                 provider_paper = provider.get_paper_by_id(cited_paper_id)
 
                 if provider_paper is None:
@@ -53,3 +56,6 @@ class ExpandByCitations(Expander):
 
     def __str__(self) -> str:
         return "<ExpandByCitations>"
+
+    def stop(self) -> None:
+        self._stop = True

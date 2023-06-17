@@ -17,6 +17,7 @@ class ExpandByReferences(Expander):
 
     def __init__(self) -> None:
         super().__init__([Policy.BY_DOI])
+        self._stop: bool = False
 
     def execute(self,
                 papers: List[Paper],
@@ -40,6 +41,8 @@ class ExpandByReferences(Expander):
 
         for referenced_paper_id, reference_papers in references_by_referenced_paper.items():
             for provider in providers:
+                if self._stop:
+                    return resulting_papers
                 provider_paper = provider.get_paper_by_id(referenced_paper_id)
                 if provider_paper is None:
                     continue
@@ -54,3 +57,6 @@ class ExpandByReferences(Expander):
 
     def __str__(self) -> str:
         return "<ExpanderByReferences>"
+
+    def stop(self) -> None:
+        self._stop = True

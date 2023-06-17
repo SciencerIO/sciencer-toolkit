@@ -13,11 +13,14 @@ class CollectByAuthorID(Collector):
     def __init__(self, author_id: str) -> None:
         super().__init__(policies=[Policy.BY_AUTHOR])
         self.__author_id: str = author_id
+        self._stop: bool = False
 
     def execute(self, providers: List[Provider]) -> List[Paper]:
 
         papers = []
         for provider in providers:
+            if self._stop:
+                return papers
             provider_papers = provider.get_papers_by_author(self.__author_id)
             papers.extend(provider_papers)
             if len(provider_papers) > 0:
@@ -27,3 +30,6 @@ class CollectByAuthorID(Collector):
 
     def __str__(self) -> str:
         return f"<CollectorByAuthorID [author id: {self.__author_id}]>"
+
+    def stop(self) -> None:
+        self._stop = True

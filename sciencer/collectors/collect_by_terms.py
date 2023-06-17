@@ -20,11 +20,14 @@ class CollectByTerms(Collector):
         super().__init__([Policy.BY_QUERY, Policy.BY_DOI])
         self.__terms: List[str] = terms
         self.__max_papers = max_papers
+        self._stop: bool = False
 
     def execute(self, providers: List[Provider]) -> List[Paper]:
 
         papers: List[Paper] = []
         for provider in providers:
+            if self._stop:
+                return papers
             provider_papers = provider.get_paper_by_terms(
                 self.__terms, self.__max_papers)
 
@@ -34,3 +37,6 @@ class CollectByTerms(Collector):
 
     def __str__(self) -> str:
         return f"<CollectorByTerms[terms: { ''.join([str(term) + ', ' for term in self.__terms])}]>"
+
+    def stop(self) -> None:
+        self._stop = True

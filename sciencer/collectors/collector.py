@@ -24,3 +24,8 @@ class Collector(HasPolicy, ABC):
     @abstractmethod
     def __str__(self) -> str:
         return super().__str__()
+
+    @abstractmethod
+    def stop(self) -> None:
+        """Stops the execution of the expander
+        """

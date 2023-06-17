@@ -74,6 +74,7 @@ class Sciencer:
         self.__expanders: List[Expander] = []
         self.__filters: List[Filter] = []
         self.__providers_by_policy: Dict[Policy, List[Provider]] = {}
+        self._stop : bool = False
 
     def add_provider(self, provider_to_add: Provider) -> None:
         """Add a providers to Sciencer
@@ -170,6 +171,8 @@ class Sciencer:
             source_papers = set()
 
             for collector in self.__collectors:
+                if self._stop:
+                    return list()
                 collected_papers = collector.execute(self.__get_provider(
                     collector.available_policies
                 ))
@@ -184,6 +187,8 @@ class Sciencer:
         paper_after_expansion = set(source_papers)
 
         for expander in self.__expanders:
+            if self._stop:
+                return list()
             paper_after_expansion.update(expander.execute(
                 papers=source_papers,
                 providers=self.__get_provider(expander.available_policies),
@@ -199,3 +204,10 @@ class Sciencer:
             resulting_papers.difference_update(source_papers)
 
         return list(resulting_papers)
+
+    def stop(self) -> None:
+        self._stop = True
+        for collector in self.__collectors:
+            collector.stop()
+        for expander in self.__expanders:
+            expander.stop()

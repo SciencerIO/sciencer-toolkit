@@ -118,6 +118,7 @@ class SearchCls:
         self.results: ResultsCls = ResultsCls()
         self.thread = None
         self.stop_thread = False
+        self.s: sciencer.Sciencer = None
 
         self.run()
 
@@ -188,6 +189,8 @@ class SearchCls:
             self.stop_thread = True
             self.thread = None
             self.status = SearchStatus.cancelled
+            if self.s is not None:
+                self.s.stop()
 
     def run_thread(self):
         self.status = SearchStatus.running
@@ -325,17 +328,17 @@ class SearchCls:
                         pass
 
             # Setup sciencer
-            s = sciencer.Sciencer()
-            s.add_provider(s2_provider)
+            self.s = sciencer.Sciencer()
+            self.s.add_provider(s2_provider)
 
             for col in sciencer_collectors:
-                s.add_collector(col)
+                self.s.add_collector(col)
 
             for exp in sciencer_expanders:
-                s.add_expander(exp)
+                self.s.add_expander(exp)
 
             for fil in sciencer_filters:
-                s.add_filter(fil)
+                self.s.add_filter(fil)
 
             callbacks = self.search_callbacks(Search=self)
 
@@ -345,14 +348,19 @@ class SearchCls:
                     print("Exiting loop.")
                     break
                 print(f"Starting iteration #{i+1}...")
-                # TODO: Add stop conditions during iteration
                 if papers_batch == []:
-                    papers_batch = s.iterate(
+                    papers_batch = self.s.iterate(
                         remove_source_from_results=True, callbacks=[callbacks]
                     )
                 else:
-                    papers_batch = s.iterate(source_papers=papers_batch, callbacks=[callbacks])
+                    papers_batch = self.s.iterate(source_papers=papers_batch, callbacks=[callbacks])
                 print(f" 📜 iteration #{i+1} collected {len(papers_batch)} papers.")
 
+        if self.stop_thread:
+            self.status = SearchStatus.cancelled
+            self.thread = None
+            return
+        
+        self.results.Accepted = papers_batch
         self.status = SearchStatus.finished
         self.thread = None

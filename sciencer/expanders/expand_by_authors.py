@@ -14,6 +14,7 @@ class ExpandByAuthors(Expander):
 
     def __init__(self) -> None:
         super().__init__(policies=[Policy.BY_AUTHOR])
+        self._stop: bool = False
 
     def execute(self,
                 papers: List[Paper],
@@ -32,6 +33,8 @@ class ExpandByAuthors(Expander):
 
         for author_id, author_papers in papers_by_authors.items():
             for provider in providers:
+                if self._stop:
+                    return resulting_papers
                 retrieved_author_papers = provider.get_papers_by_author(
                     author_id)
 
@@ -49,3 +52,6 @@ class ExpandByAuthors(Expander):
 
     def __str__(self) -> str:
         return "<ExpandByAuthors>"
+
+    def stop(self) -> None:
+        self._stop = True
