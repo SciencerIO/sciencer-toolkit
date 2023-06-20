@@ -25,7 +25,7 @@ class SearchStatus(str, Enum):
 
 
 class SearchConfiguration(BaseModel):
-    num_iterations: int
+    num_iterations: int = 1
     max_num_papers: int = 100
     filters: list[Filter] = []
     expanders: list[Expander] = []

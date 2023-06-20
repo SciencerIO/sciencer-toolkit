@@ -9,12 +9,22 @@ server = FastAPI()
 origins = [
     "http://localhost",
     "http://localhost:8080",
+    "http://127.0.0.1",
+    "http://127.0.0.1:8080",
+    # for the development of the webapp locally.
+    "http://127.0.0.1:3000",
+    "http://localhost:3000",
+    # for production
+    "http://www.sciencer.world",
+    "https://www.sciencer.world",
+    "http://www.sciencer.world:8080",
+    "https://www.sciencer.world:8080",
 ]
 
 server.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
